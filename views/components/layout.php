@@ -59,6 +59,7 @@ if (!isset($metaDescription)) {
       });
     }
   </script>
+  <script src="/public/assets/js/button-loading.js"></script>
   <script src="/public/assets/js/app.main.js"></script>
 </body>
 </html>
