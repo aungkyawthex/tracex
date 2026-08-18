@@ -1,11 +1,7 @@
 <?php
-require __DIR__ . '/../src/helpers/url.php';
-require __DIR__ . '/../src/helpers/flash.php';
-require_once __DIR__ . '/../src/helpers/isLoggedIn.php';
-require_once __DIR__ . '/../src/bootstrap.php';
+require __DIR__ . '/../src/auth_page.php';
 
 $title = 'Insights - TraceX';
-$userId = (int) $_SESSION['user_id'];
 
   $currentMonth = date('Y-m-01');
   $nextMonth = date('Y-m-01', strtotime('+1 month'));

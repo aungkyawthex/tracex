@@ -1,13 +1,12 @@
 <?php
-require_once __DIR__ . '/../src/helpers/isLoggedIn.php';
-require_once __DIR__ . '/../src/bootstrap.php';
-require __DIR__ . '/../src/helpers/flash.php';
+require __DIR__ . '/../src/auth_page.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !isset($_POST['btnUpdateExpense'])) {
-  exit;
+  setFlashAndRedirect('error', 'Invalid update request.', 'expenses.php');
 }
 
-$userId = (int) $_SESSION['user_id'];
+verifyCsrf();
+
 $expenseId = (int) ($_POST['edit_expense_id'] ?? 0);
 $expenseDate = trim($_POST['expense_date'] ?? '');
 $amount = $_POST['amount'] ?? '';
@@ -32,33 +31,15 @@ if ($paymentMethodId <= 0) {
   $errors[] = 'Payment method is required.';
 }
 
-$isValidOption = function (string $table, int $id) use ($pdo, $userId): bool {
-  $hasUserId = tableHasColumn($pdo, $table, 'user_id');
-  $sql = "SELECT id FROM {$table} WHERE id = :id";
-  $params = [':id' => $id];
-
-  if ($hasUserId) {
-    $sql .= ' AND (user_id IS NULL OR user_id = :user_id)';
-    $params[':user_id'] = $userId;
-  }
-
-  $stmt = $pdo->prepare($sql);
-  $stmt->execute($params);
-
-  return (bool) $stmt->fetchColumn();
-};
-
-if (!$errors && !$isValidOption('categories', $categoryId)) {
+if (!$errors && !isVisibleLookupId($pdo, 'categories', $categoryId, $userId)) {
   $errors[] = 'Selected category is invalid.';
 }
-if (!$errors && !$isValidOption('payment_methods', $paymentMethodId)) {
+if (!$errors && !isVisibleLookupId($pdo, 'payment_methods', $paymentMethodId, $userId)) {
   $errors[] = 'Selected payment method is invalid.';
 }
 
 if ($errors) {
-  setFlash('error', $errors[0]);
-  header('Location: expenses.php');
-  exit;
+  setFlashAndRedirect('error', $errors[0], 'expenses.php');
 }
 
 $stmt = $pdo->prepare('UPDATE expenses SET expense_date = :expense_date, amount = :amount, category_id = :category_id, payment_method_id = :payment_method_id, note = :note, status = :status WHERE id = :id AND user_id = :user_id');
@@ -73,6 +54,5 @@ $stmt->execute([
   ':user_id' => $userId,
 ]);
 
-setFlash($stmt->rowCount() ? 'success' : 'error', $stmt->rowCount() ? 'Expense has been updated!' : 'Expense not found or access denied.');
-header('Location: expenses.php');
-exit;
+$updated = $stmt->rowCount() > 0;
+setFlashAndRedirect($updated ? 'success' : 'error', $updated ? 'Expense has been updated!' : 'Expense not found or access denied.', 'expenses.php');

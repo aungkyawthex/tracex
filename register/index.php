@@ -2,6 +2,7 @@
     include __DIR__ . '/../src/helpers/url.php';
     include __DIR__ . '/../src/bootstrap.php';
     require_once __DIR__ . '/../src/helpers/isGuest.php';
+    require_once __DIR__ . '/../src/helpers/csrf.php';
 
     $title = "Sign Up - TraceX";
     ob_start();
@@ -9,6 +10,7 @@
     $success = false;
 
     if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btnSignUp'])){
+        verifyCsrf();
         $name = trim($_POST['name'] ?? '');
         $email = trim($_POST['email'] ?? '');
         $password = $_POST['password'] ?? '';
@@ -52,25 +54,32 @@
         // register
         if (empty($errors)) {
             $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-            // insert
-            $stmt = $pdo->prepare("INSERT INTO users(name, email, password, role) VALUES (?, ?, ?, ?)");
-            $result = $stmt->execute([
-                $name,
-                $email,
-                $hashedPassword,
-                'user'
-            ]);
 
-            if ($result) {
+            try {
+                $stmt = $pdo->prepare("INSERT INTO users(name, email, password, role) VALUES (?, ?, ?, ?)");
+                $stmt->execute([
+                    $name,
+                    $email,
+                    $hashedPassword,
+                    'user'
+                ]);
+
                 $success = true;
+                session_regenerate_id(true);
                 $_SESSION['user_id'] = $pdo->lastInsertId();
                 $_SESSION['user_email'] = $email;
                 $_SESSION['user_name'] = $name;
 
                 header("Location: ../public/index.php");
                 exit();
-            } else {
-                $errors['database'] = 'Registration failed. Please try again';
+            } catch (PDOException $e) {
+                logThrowable($e, 'registration failed');
+
+                if ($e->getCode() === '23000') {
+                    $errors['email'] = 'This email is already registered';
+                } else {
+                    $errors['database'] = 'Registration failed. Please try again';
+                }
             }
         }
     }
@@ -93,6 +102,7 @@
     </div>
     
     <form method="POST" action="index.php">
+        <?= csrfField() ?>
         <div class="mb-4">
             <label class="block text-gray-700 text-sm font-bold mb-2" for="name">
                 Name

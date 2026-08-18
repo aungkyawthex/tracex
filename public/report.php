@@ -1,6 +1,5 @@
 <?php
-require __DIR__ . '/../src/helpers/url.php';
-require_once __DIR__ . '/../src/helpers/isLoggedIn.php';
+require __DIR__ . '/../src/auth_page.php';
 
 $title = 'Reports - TraceX';
 

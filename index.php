@@ -1,6 +1,7 @@
 <?php
 include __DIR__ . '/src/helpers/url.php';
-session_start();
+require_once __DIR__ . '/src/helpers/session.php';
+startSession();
 ?>
 <!DOCTYPE html>
 <html lang="en">

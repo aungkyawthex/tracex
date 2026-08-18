@@ -1,6 +1,12 @@
 <?php
 
+if (PHP_SAPI !== 'cli') {
+    http_response_code(404);
+    exit;
+}
+
 require_once __DIR__ . '/../config/db.php';
+require_once __DIR__ . '/../src/helpers/errors.php';
 
 class DatabaseMigration
 {
@@ -315,6 +321,7 @@ class DatabaseMigration
 
         $rows = $this->pdo->query("SHOW PROCESSLIST")->fetchAll(PDO::FETCH_ASSOC);
         $killed = 0;
+        $failed = 0;
 
         foreach ($rows as $row) {
             $id = isset($row['Id']) ? (int) $row['Id'] : 0;
@@ -328,11 +335,16 @@ class DatabaseMigration
                 $this->pdo->exec("KILL {$id}");
                 $killed++;
             } catch (PDOException $e) {
-                // Ignore individual kill failures and continue.
+                $failed++;
+                fwrite(STDERR, "Warning: could not kill connection {$id}: {$e->getMessage()}\n");
             }
         }
 
         echo "Killed {$killed} other connection(s) on DB '{$currentDb}'.\n";
+
+        if ($failed > 0) {
+            echo "Failed to kill {$failed} connection(s); a fresh setup may block on locks.\n";
+        }
     }
 }
 
@@ -366,6 +378,8 @@ try {
 
     $migration = new DatabaseMigration($pdo);
     $migration->run($fresh, $seed, $killConnections);
-} catch (PDOException $e) {
-    die("Database setup failed: " . $e->getMessage() . PHP_EOL);
+} catch (Throwable $e) {
+    logThrowable($e, 'database setup failed');
+    fwrite(STDERR, "Database setup failed: " . $e->getMessage() . PHP_EOL);
+    exit(1);
 }

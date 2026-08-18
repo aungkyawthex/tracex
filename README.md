@@ -200,7 +200,29 @@ The setup script manages these tables:
 | `npm run serve` | Start PHP dev server at `localhost:8000`. |
 | `npm run build` | Build minified Tailwind CSS. |
 | `npm run watch` | Watch Tailwind input and rebuild on changes. |
-| `npm test` | Placeholder test script. |
+| `npm test` | Run the PHPUnit test suite. |
+
+## Testing
+
+Install the dev dependencies once:
+
+```bash
+composer install
+```
+
+Run the unit tests:
+
+```bash
+composer test
+```
+
+Run them with a line coverage report (requires pcov or Xdebug):
+
+```bash
+php -d pcov.enabled=1 vendor/bin/phpunit --coverage-text
+```
+
+Tests live in `tests/` and cover the reusable helpers in `src/helpers/`. Database-backed helpers are tested against `PDO` mocks, so no MySQL instance is needed.
 
 ## Troubleshooting
 

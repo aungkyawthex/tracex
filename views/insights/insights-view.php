@@ -34,7 +34,7 @@
     </div>
     <div class="bg-white rounded-lg shadow p-6">
       <h3 class="text-sm font-medium text-gray-500 mb-1">Top Category</h3>
-      <p class="text-2xl font-bold text-gray-900 truncate"><?= $categorySpending[0]['name'] ?? 'N/A' ?></p>
+      <p class="text-2xl font-bold text-gray-900 truncate"><?= htmlspecialchars($categorySpending[0]['name'] ?? 'N/A') ?></p>
       <p class="mt-1 text-sm text-gray-500"><?= number_format($categorySpending[0]['total_spent'] ?? 0, 2) ?> MMK</p>
     </div>
   </div>

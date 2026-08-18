@@ -1,5 +1,22 @@
 <?php
-session_start();
+require_once __DIR__ . '/session.php';
+require_once __DIR__ . '/csrf.php';
+require_once __DIR__ . '/../bootstrap.php';
+
+startSession();
+
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+  http_response_code(405);
+  exit('Method not allowed.');
+}
+
+verifyCsrf();
+
+if (isset($_SESSION['user_id'])) {
+  $stmt = $pdo->prepare("UPDATE users SET remember_token = NULL, token_expiry = NULL WHERE id = ?");
+  $stmt->execute([(int) $_SESSION['user_id']]);
+}
+
 $_SESSION = array();
 
 // delete cookie

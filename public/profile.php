@@ -1,13 +1,11 @@
 <?php
-require __DIR__ . '/../src/helpers/url.php';
-require_once __DIR__ . '/../src/helpers/isLoggedIn.php';
-require_once __DIR__ . '/../src/bootstrap.php';
+require __DIR__ . '/../src/auth_page.php';
 
 $title = 'Account';
 $updateErrors = [];
-$userId = (int) $_SESSION['user_id'];
 
   if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btnUpdateProfile'])) {
+    verifyCsrf();
     $name = trim($_POST['name'] ?? '');
     $email = trim($_POST['email'] ?? '');
 
@@ -31,17 +29,27 @@ $userId = (int) $_SESSION['user_id'];
     }
 
     if (empty($updateErrors)) {
-      $updateStmt = $pdo->prepare("UPDATE users SET name = :name, email = :email WHERE id = :id");
-      $updateStmt->execute([
-        ':name' => $name,
-        ':email' => $email,
-        ':id' => $userId
-      ]);
+      try {
+        $updateStmt = $pdo->prepare("UPDATE users SET name = :name, email = :email WHERE id = :id");
+        $updateStmt->execute([
+          ':name' => $name,
+          ':email' => $email,
+          ':id' => $userId
+        ]);
 
-      $_SESSION['user_name'] = $name;
-      $_SESSION['user_email'] = $email;
-      header("Location: profile.php");
-      exit;
+        $_SESSION['user_name'] = $name;
+        $_SESSION['user_email'] = $email;
+        header("Location: profile.php");
+        exit;
+      } catch (PDOException $e) {
+        logThrowable($e, 'profile update failed');
+
+        if ($e->getCode() === '23000') {
+          $updateErrors['email'] = 'Email is already exists.';
+        } else {
+          $updateErrors['update'] = 'Could not update your profile. Please try again.';
+        }
+      }
     }
   }
 
@@ -57,20 +65,9 @@ $userId = (int) $_SESSION['user_id'];
   $statsStmt->execute([':user_id' => $userId]);
   $stats = $statsStmt->fetch(PDO::FETCH_ASSOC) ?: [];
 
-  if (tableHasColumn($pdo, 'categories', 'user_id')) {
-    $categoriesStmt = $pdo->prepare("
-      SELECT COUNT(*)
-      FROM categories
-      WHERE user_id IS NULL OR user_id = :user_id
-    ");
-    $categoriesStmt->execute([':user_id' => $userId]);
-  } else {
-    $categoriesStmt = $pdo->query("SELECT COUNT(*) FROM categories");
-  }
-
   $expensesAdded = (int) ($stats['expenses_added'] ?? 0);
   $savingsGoals = (int) ($stats['savings_goals'] ?? 0);
-  $categoriesTotal = (int) $categoriesStmt->fetchColumn();
+  $categoriesTotal = getVisibleCategoryCount($pdo, $userId);
   $daysActive = 0;
   if (!empty($user['created_at'])) {
     $createdAtTs = strtotime((string) $user['created_at']);

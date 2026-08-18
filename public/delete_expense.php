@@ -1,17 +1,15 @@
 <?php
-require_once __DIR__ . '/../src/helpers/isLoggedIn.php';
-require_once __DIR__ . '/../src/bootstrap.php';
-require __DIR__ . '/../src/helpers/flash.php';
+require __DIR__ . '/../src/auth_page.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !isset($_POST['btnDeleteExpense'])) {
-  exit;
+  setFlashAndRedirect('error', 'Invalid delete request.', 'expenses.php');
 }
+
+verifyCsrf();
 
 $expenseId = (int) ($_POST['id'] ?? 0);
 if ($expenseId <= 0) {
-  setFlash('error', 'Invalid expense ID.');
-  header('Location: expenses.php');
-  exit;
+  setFlashAndRedirect('error', 'Invalid expense ID.', 'expenses.php');
 }
 
 $stmt = $pdo->prepare('DELETE FROM expenses WHERE id = :id AND user_id = :user_id');
@@ -20,6 +18,5 @@ $stmt->execute([
   ':user_id' => $_SESSION['user_id'],
 ]);
 
-setFlash($stmt->rowCount() ? 'success' : 'error', $stmt->rowCount() ? 'Expense has been deleted!' : 'Expense not found or access denied.');
-header('Location: expenses.php');
-exit;
+$deleted = $stmt->rowCount() > 0;
+setFlashAndRedirect($deleted ? 'success' : 'error', $deleted ? 'Expense has been deleted!' : 'Expense not found or access denied.', 'expenses.php');

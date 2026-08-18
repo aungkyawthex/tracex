@@ -16,4 +16,10 @@
     return null;
   }
 
+  function setFlashAndRedirect($type, $message, $location) {
+    setFlash($type, $message);
+    header("Location: {$location}");
+    exit;
+  }
+
 ?>

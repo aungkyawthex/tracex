@@ -1,61 +1,52 @@
 <?php
-require __DIR__ . '/../src/helpers/url.php';
-require __DIR__ . '/../src/helpers/flash.php';
-require_once __DIR__ . '/../src/helpers/isLoggedIn.php';
-require_once __DIR__ . '/../src/bootstrap.php';
+require __DIR__ . '/../src/auth_page.php';
+require_once __DIR__ . '/../src/helpers/savings.php';
 
 $title = 'Savings - TraceX';
-$userId = (int) $_SESSION['user_id'];
 $errors = [];
 
-function getSavingCurrentAmount(PDO $pdo, int $savingId, int $userId): ?float
-{
-    $stmt = $pdo->prepare("
-        SELECT COALESCE(SUM(CASE WHEN st.type = 'deposit' THEN st.amount ELSE -st.amount END), 0) AS current_amount
-        FROM savings s
-        LEFT JOIN saving_transactions st ON st.saving_id = s.id
-        WHERE s.id = :saving_id AND s.user_id = :user_id
-        GROUP BY s.id
-    ");
-    $stmt->execute([
-        ':saving_id' => $savingId,
-        ':user_id' => $userId,
-    ]);
-    $amount = $stmt->fetchColumn();
-    if ($amount === false) {
-        return null;
+$validateSaving = function (bool $isUpdate): array {
+    $fields = [
+        'id' => isset($_POST['edit_saving_id']) ? (int) $_POST['edit_saving_id'] : 0,
+        'name' => trim($_POST['name'] ?? ''),
+        'description' => trim($_POST['description'] ?? ''),
+        'targetAmount' => $_POST['target_amount'] ?? '',
+        'startDate' => trim($_POST['start_date'] ?? ''),
+        'targetDate' => trim($_POST['target_date'] ?? ''),
+        'status' => trim($_POST['status'] ?? 'active'),
+    ];
+    $errors = [];
+
+    if ($isUpdate && $fields['id'] <= 0) {
+        $errors['id'] = 'Invalid saving ID.';
     }
-    return (float) $amount;
-}
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btnSaveSaving'])) {
-    $name = trim($_POST['name'] ?? '');
-    $description = trim($_POST['description'] ?? '');
-    $targetAmount = $_POST['target_amount'] ?? '';
-    $startDate = trim($_POST['start_date'] ?? '');
-    $targetDate = trim($_POST['target_date'] ?? '');
-    $status = trim($_POST['status'] ?? 'active');
-
-    if ($name === '') {
+    if ($fields['name'] === '') {
         $errors['name'] = 'Saving name is required.';
     }
-    if (!is_numeric($targetAmount) || (float) $targetAmount <= 0) {
+    if (!is_numeric($fields['targetAmount']) || (float) $fields['targetAmount'] <= 0) {
         $errors['target_amount'] = 'Target amount must be greater than zero.';
     }
-    if ($startDate !== '' && strtotime($startDate) === false) {
+    if ($fields['startDate'] !== '' && strtotime($fields['startDate']) === false) {
         $errors['start_date'] = 'Invalid start date.';
     }
-    if ($targetDate !== '' && strtotime($targetDate) === false) {
+    if ($fields['targetDate'] !== '' && strtotime($fields['targetDate']) === false) {
         $errors['target_date'] = 'Invalid target date.';
     }
-    if ($startDate !== '' && $targetDate !== '' && strtotime($targetDate) < strtotime($startDate)) {
+    if ($fields['startDate'] !== '' && $fields['targetDate'] !== '' && strtotime($fields['targetDate']) < strtotime($fields['startDate'])) {
         $errors['target_date'] = 'Target date must be after start date.';
     }
 
     $allowedStatuses = ['active', 'completed', 'cancelled'];
-    if (!in_array($status, $allowedStatuses, true)) {
-        $status = 'active';
+    if (!in_array($fields['status'], $allowedStatuses, true)) {
+        $fields['status'] = 'active';
     }
+
+    return [$fields, $errors];
+};
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btnSaveSaving'])) {
+    verifyCsrf();
+    [$fields, $errors] = $validateSaving(false);
 
     if (empty($errors)) {
         $stmt = $pdo->prepare("
@@ -64,56 +55,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btnSaveSaving'])) {
         ");
         $stmt->execute([
             ':user_id' => $userId,
-            ':name' => $name,
-            ':description' => $description !== '' ? $description : null,
-            ':target_amount' => (float) $targetAmount,
-            ':start_date' => $startDate !== '' ? $startDate : null,
-            ':target_date' => $targetDate !== '' ? $targetDate : null,
-            ':status' => $status,
+            ':name' => $fields['name'],
+            ':description' => $fields['description'] !== '' ? $fields['description'] : null,
+            ':target_amount' => (float) $fields['targetAmount'],
+            ':start_date' => $fields['startDate'] !== '' ? $fields['startDate'] : null,
+            ':target_date' => $fields['targetDate'] !== '' ? $fields['targetDate'] : null,
+            ':status' => $fields['status'],
         ]);
 
-        setFlash('success', 'Saving has been added!');
-        header("Location: savings.php");
-        exit;
+        setFlashAndRedirect('success', 'Saving has been added!', 'savings.php');
     }
 
-    setFlash('error', array_values($errors)[0]);
-    header("Location: savings.php");
-    exit;
+    setFlashAndRedirect('error', array_values($errors)[0], 'savings.php');
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btnUpdateSaving'])) {
-    $id = isset($_POST['edit_saving_id']) ? (int) $_POST['edit_saving_id'] : 0;
-    $name = trim($_POST['name'] ?? '');
-    $description = trim($_POST['description'] ?? '');
-    $targetAmount = $_POST['target_amount'] ?? '';
-    $startDate = trim($_POST['start_date'] ?? '');
-    $targetDate = trim($_POST['target_date'] ?? '');
-    $status = trim($_POST['status'] ?? 'active');
-
-    if ($id <= 0) {
-        $errors['id'] = 'Invalid saving ID.';
-    }
-    if ($name === '') {
-        $errors['name'] = 'Saving name is required.';
-    }
-    if (!is_numeric($targetAmount) || (float) $targetAmount <= 0) {
-        $errors['target_amount'] = 'Target amount must be greater than zero.';
-    }
-    if ($startDate !== '' && strtotime($startDate) === false) {
-        $errors['start_date'] = 'Invalid start date.';
-    }
-    if ($targetDate !== '' && strtotime($targetDate) === false) {
-        $errors['target_date'] = 'Invalid target date.';
-    }
-    if ($startDate !== '' && $targetDate !== '' && strtotime($targetDate) < strtotime($startDate)) {
-        $errors['target_date'] = 'Target date must be after start date.';
-    }
-
-    $allowedStatuses = ['active', 'completed', 'cancelled'];
-    if (!in_array($status, $allowedStatuses, true)) {
-        $status = 'active';
-    }
+    verifyCsrf();
+    [$fields, $errors] = $validateSaving(true);
 
     if (empty($errors)) {
         $stmt = $pdo->prepare("
@@ -127,38 +85,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btnUpdateSaving'])) {
             WHERE id = :id AND user_id = :user_id
         ");
         $stmt->execute([
-            ':id' => $id,
+            ':id' => $fields['id'],
             ':user_id' => $userId,
-            ':name' => $name,
-            ':description' => $description !== '' ? $description : null,
-            ':target_amount' => (float) $targetAmount,
-            ':start_date' => $startDate !== '' ? $startDate : null,
-            ':target_date' => $targetDate !== '' ? $targetDate : null,
-            ':status' => $status,
+            ':name' => $fields['name'],
+            ':description' => $fields['description'] !== '' ? $fields['description'] : null,
+            ':target_amount' => (float) $fields['targetAmount'],
+            ':start_date' => $fields['startDate'] !== '' ? $fields['startDate'] : null,
+            ':target_date' => $fields['targetDate'] !== '' ? $fields['targetDate'] : null,
+            ':status' => $fields['status'],
         ]);
 
         if ($stmt->rowCount() === 0) {
-            setFlash('error', 'Saving not found or access denied.');
-            header("Location: savings.php");
-            exit;
+            setFlashAndRedirect('error', 'Saving not found or access denied.', 'savings.php');
         }
 
-        setFlash('success', 'Saving has been updated!');
-        header("Location: savings.php");
-        exit;
+        setFlashAndRedirect('success', 'Saving has been updated!', 'savings.php');
     }
 
-    setFlash('error', array_values($errors)[0]);
-    header("Location: saving.php");
-    exit;
+    setFlashAndRedirect('error', array_values($errors)[0], 'savings.php');
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btnDeleteSaving'])) {
+    verifyCsrf();
     $id = isset($_POST['id']) ? (int) $_POST['id'] : 0;
     if ($id <= 0) {
-        setFlash('error', 'Invalid saving ID.');
-        header("Location: saving.php");
-        exit;
+        setFlashAndRedirect('error', 'Invalid saving ID.', 'savings.php');
     }
 
     $stmt = $pdo->prepare("DELETE FROM savings WHERE id = :id AND user_id = :user_id");
@@ -168,17 +119,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btnDeleteSaving'])) {
     ]);
 
     if ($stmt->rowCount() === 0) {
-        setFlash('error', 'Saving not found or access denied.');
-        header("Location: saving.php");
-        exit;
+        setFlashAndRedirect('error', 'Saving not found or access denied.', 'savings.php');
     }
 
-    setFlash('success', 'Saving has been deleted!');
-    header("Location: savings.php");
-    exit;
+    setFlashAndRedirect('success', 'Saving has been deleted!', 'savings.php');
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btnSaveSavingTransaction'])) {
+    verifyCsrf();
     $savingId = isset($_POST['saving_id']) ? (int) $_POST['saving_id'] : 0;
     $type = trim($_POST['type'] ?? '');
     $amount = $_POST['amount'] ?? '';
@@ -204,9 +152,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btnSaveSavingTransact
     }
 
     if (!empty($errors)) {
-        setFlash('error', array_values($errors)[0]);
-        header("Location: savings.php");
-        exit;
+        setFlashAndRedirect('error', array_values($errors)[0], 'savings.php');
     }
 
     $stmt = $pdo->prepare("
@@ -221,9 +167,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btnSaveSavingTransact
         ':note' => $note !== '' ? $note : null,
     ]);
 
-    setFlash('success', 'Saving transaction added.');
-    header("Location: savings.php");
-    exit;
+    setFlashAndRedirect('success', 'Saving transaction added.', 'savings.php');
 }
 
 $stmt = $pdo->prepare("
@@ -254,20 +198,4 @@ ob_start();
 include __DIR__ . '/../views/savings/saving-view.php';
 $content = ob_get_clean();
 include __DIR__ . '/../views/components/layout.php';
-
-$flash = getFlash();
-if ($flash):
-?>
-<script>
-  Swal.fire({
-    toast: true,
-    position: "top-end",
-    icon: "<?= $flash['type'] ?>",
-    title: <?= json_encode($flash['message']) ?>,
-    showConfirmButton: false,
-    timer: 1500,
-    width: "500px",
-    timerProgressBar: true
-  });
-</script>
-<?php endif; ?>
+include __DIR__ . '/../views/components/flash-toast.php';

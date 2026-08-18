@@ -2,12 +2,14 @@
     include __DIR__ . '/../src/helpers/url.php';
     include __DIR__ . '/../src/bootstrap.php';
     require_once __DIR__ . '/../src/helpers/isGuest.php';
+    require_once __DIR__ . '/../src/helpers/csrf.php';
 
     $title = "Sign In - TraceX";
     ob_start();
     $errors = [];
 
     if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btnSignIn'])) {
+        verifyCsrf();
         $email = trim($_POST['email'] ?? '');
         $password = $_POST['password'] ?? '';
         $remember = isset($_POST['remember-me']) ? true : false;
@@ -24,27 +26,38 @@
             $stmt = $pdo->prepare("SELECT * FROM users WHERE email = ?");
             $stmt->execute([$email]);
             $user = $stmt->fetch();
-        }
 
-        // check password
-        if(!empty($user) && password_verify($password, $user['password'])) {
-            session_regenerate_id(true);
-            $_SESSION['user_id'] = $user['id'];
-            $_SESSION['user_email'] = $user['email'];
-            $_SESSION['user_name'] = $user['name'];
+            if(!empty($user) && password_verify($password, $user['password'])) {
+                session_regenerate_id(true);
+                $_SESSION['user_id'] = $user['id'];
+                $_SESSION['user_email'] = $user['email'];
+                $_SESSION['user_name'] = $user['name'];
 
-            if($remember) {
-                $token = bin2hex(random_bytes(32));
-                $expiry = time() + 60 * 60 * 24; // one day
-                $stmt = $pdo->prepare("UPDATE users SET remember_token = ?, token_expiry = ? WHERE id = ?");
-                $stmt->execute([$token, date('Y-m-d H:i:s', $expiry), $user['id']]);
-                // set cookie
-                $isHttps = !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off';
-                setcookie('remember_token', $token, $expiry, '/', '', $isHttps, true);
+                if($remember) {
+                    $token = bin2hex(random_bytes(32));
+                    $expiry = time() + 60 * 60 * 24; // one day
+
+                    // A failed remember-me token must not block an otherwise valid sign-in.
+                    try {
+                        $stmt = $pdo->prepare("UPDATE users SET remember_token = ?, token_expiry = ? WHERE id = ?");
+                        $stmt->execute([hash('sha256', $token), date('Y-m-d H:i:s', $expiry), $user['id']]);
+
+                        setcookie('remember_token', $token, [
+                            'expires' => $expiry,
+                            'path' => '/',
+                            'secure' => !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off',
+                            'httponly' => true,
+                            'samesite' => 'Lax',
+                        ]);
+                    } catch (PDOException $e) {
+                        logThrowable($e, 'failed to store remember-me token');
+                    }
+                }
+
+                header("Location: ../public/index.php");
+                exit();
             }
-            header("Location: ../public/index.php");
-            exit();
-        } else {
+
             $errors['login'] = "Invalid email or password";
         }
     }
@@ -54,7 +67,7 @@
             $token = $_COOKIE['remember_token'];
 
             $stmt = $pdo->prepare("SELECT * FROM users WHERE remember_token = ? AND token_expiry > NOW()");
-            $stmt->execute([$token]);
+            $stmt->execute([hash('sha256', $token)]);
             $user = $stmt->fetch();
 
             if($user) {
@@ -82,6 +95,7 @@
     </div>
     
     <form method="POST" action="">
+        <?= csrfField() ?>
         <div class="mb-4">
             <label class="block text-gray-700 text-sm font-bold mb-2" for="email">
                 Email

@@ -1,11 +1,7 @@
 <?php
-require __DIR__ . '/../src/helpers/url.php';
-require __DIR__ . '/../src/helpers/flash.php';
-require_once __DIR__ . '/../src/helpers/isLoggedIn.php';
-require_once __DIR__ . '/../src/bootstrap.php';
+require __DIR__ . '/../src/auth_page.php';
 
 $title = 'Budgets - TraceX';
-$userId = (int) $_SESSION['user_id'];
 $errors = [];
 
 function normalizeBudgetMonth(string $value): ?string
@@ -25,69 +21,77 @@ function normalizeBudgetMonth(string $value): ?string
     return null;
 }
 
-$hasCategoryUserId = tableHasColumn($pdo, 'categories', 'user_id');
-$isValidCategory = function (int $categoryId) use ($pdo, $userId, $hasCategoryUserId): bool {
-    $sql = 'SELECT id FROM categories WHERE id = :id';
-    $params = [':id' => $categoryId];
+$categories = getVisibleLookupRows($pdo, 'categories', 'id, name', $userId);
 
-    if ($hasCategoryUserId) {
-        $sql .= ' AND (user_id IS NULL OR user_id = :user_id)';
-        $params[':user_id'] = $userId;
+$validateBudget = function (bool $isUpdate) use ($pdo, $userId): array {
+    $fields = [
+        'id' => isset($_POST['edit_budget_id']) ? (int) $_POST['edit_budget_id'] : 0,
+        'categoryId' => isset($_POST['category_id']) ? (int) $_POST['category_id'] : 0,
+        'amount' => $_POST['amount'] ?? '',
+        'monthYear' => normalizeBudgetMonth((string) ($_POST['month_year'] ?? '')),
+    ];
+    $errors = [];
+
+    if ($isUpdate && $fields['id'] <= 0) {
+        $errors['id'] = 'Invalid budget ID.';
     }
-
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute($params);
-
-    return (bool) $stmt->fetchColumn();
-};
-
-if ($hasCategoryUserId) {
-    $categoryStmt = $pdo->prepare("SELECT id, name FROM categories WHERE user_id IS NULL OR user_id = :user_id ORDER BY name ASC");
-    $categoryStmt->execute([':user_id' => $_SESSION['user_id']]);
-} else {
-    $categoryStmt = $pdo->query("SELECT id, name FROM categories ORDER BY name ASC");
-}
-$categories = $categoryStmt->fetchAll(PDO::FETCH_ASSOC);
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btnSaveBudget'])) {
-    $categoryId = isset($_POST['category_id']) ? (int) $_POST['category_id'] : 0;
-    $amount = $_POST['amount'] ?? '';
-    $monthInput = $_POST['month_year'] ?? '';
-    $monthYear = normalizeBudgetMonth((string) $monthInput);
-
-    if ($categoryId <= 0) {
+    if ($fields['categoryId'] <= 0) {
         $errors['category_id'] = 'Category is required.';
     }
-    if (!is_numeric($amount) || (float) $amount <= 0) {
+    if (!is_numeric($fields['amount']) || (float) $fields['amount'] <= 0) {
         $errors['amount'] = 'Amount must be greater than zero.';
     }
-    if ($monthYear === null) {
+    if ($fields['monthYear'] === null) {
         $errors['month_year'] = 'Month is required.';
     }
 
-    if (!isset($errors['category_id']) && !$isValidCategory($categoryId)) {
+    if (!isset($errors['category_id']) && !isVisibleLookupId($pdo, 'categories', $fields['categoryId'], $userId)) {
         $errors['category_id'] = 'Selected category is invalid.';
     }
 
     if (empty($errors)) {
-        $dupStmt = $pdo->prepare("
+        $sql = "
             SELECT id
             FROM budgets
             WHERE user_id = :user_id
               AND category_id = :category_id
               AND month_year = :month_year
-            LIMIT 1
-        ");
-        $dupStmt->execute([
-            ':user_id' => $_SESSION['user_id'],
-            ':category_id' => $categoryId,
-            ':month_year' => $monthYear,
-        ]);
+        ";
+        $params = [
+            ':user_id' => $userId,
+            ':category_id' => $fields['categoryId'],
+            ':month_year' => $fields['monthYear'],
+        ];
+
+        if ($isUpdate) {
+            $sql .= ' AND id <> :id';
+            $params[':id'] = $fields['id'];
+        }
+
+        $sql .= ' LIMIT 1';
+        $dupStmt = $pdo->prepare($sql);
+        $dupStmt->execute($params);
 
         if ($dupStmt->fetchColumn()) {
             $errors['duplicate'] = 'Budget already exists for this category and month.';
         }
     }
+
+    return [$fields, $errors];
+};
+
+$handleBudgetException = function (PDOException $e, string $operation): void {
+    $message = "Something went wrong while {$operation} budget.";
+    if (($e->getCode() ?? '') === '23000') {
+        $message = 'Budget already exists for this category and month.';
+    }
+
+    setFlashAndRedirect('error', $message, 'budgets.php');
+};
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btnSaveBudget'])) {
+    verifyCsrf();
+    [$fields, $errors] = $validateBudget(false);
 
     if (empty($errors)) {
         try {
@@ -96,75 +100,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btnSaveBudget'])) {
                 VALUES (:user_id, :category_id, :amount, :month_year)
             ");
             $stmt->execute([
-                ':user_id' => $_SESSION['user_id'],
-                ':category_id' => $categoryId,
-                ':amount' => (float) $amount,
-                ':month_year' => $monthYear,
+                ':user_id' => $userId,
+                ':category_id' => $fields['categoryId'],
+                ':amount' => (float) $fields['amount'],
+                ':month_year' => $fields['monthYear'],
             ]);
-            setFlash('success', 'Budget has been added!');
-            header("Location: budgets.php");
-            exit;
+            setFlashAndRedirect('success', 'Budget has been added!', 'budgets.php');
         } catch (PDOException $e) {
-            if (($e->getCode() ?? '') === '23000') {
-                setFlash('error', 'Budget already exists for this category and month.');
-            } else {
-                setFlash('error', 'Something went wrong while creating budget.');
-            }
-            header("Location: budgets.php");
-            exit;
+            $handleBudgetException($e, 'creating');
         }
     }
 
-    setFlash('error', array_values($errors)[0]);
-    header("Location: budgets.php");
-    exit;
+    setFlashAndRedirect('error', array_values($errors)[0], 'budgets.php');
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btnUpdateBudget'])) {
-    $id = isset($_POST['edit_budget_id']) ? (int) $_POST['edit_budget_id'] : 0;
-    $categoryId = isset($_POST['category_id']) ? (int) $_POST['category_id'] : 0;
-    $amount = $_POST['amount'] ?? '';
-    $monthInput = $_POST['month_year'] ?? '';
-    $monthYear = normalizeBudgetMonth((string) $monthInput);
-
-    if ($id <= 0) {
-        $errors['id'] = 'Invalid budget ID.';
-    }
-    if ($categoryId <= 0) {
-        $errors['category_id'] = 'Category is required.';
-    }
-    if (!is_numeric($amount) || (float) $amount <= 0) {
-        $errors['amount'] = 'Amount must be greater than zero.';
-    }
-    if ($monthYear === null) {
-        $errors['month_year'] = 'Month is required.';
-    }
-
-    if (!isset($errors['category_id']) && !$isValidCategory($categoryId)) {
-        $errors['category_id'] = 'Selected category is invalid.';
-    }
-
-    if (empty($errors)) {
-        $dupStmt = $pdo->prepare("
-            SELECT id
-            FROM budgets
-            WHERE user_id = :user_id
-              AND category_id = :category_id
-              AND month_year = :month_year
-              AND id <> :id
-            LIMIT 1
-        ");
-        $dupStmt->execute([
-            ':user_id' => $_SESSION['user_id'],
-            ':category_id' => $categoryId,
-            ':month_year' => $monthYear,
-            ':id' => $id,
-        ]);
-
-        if ($dupStmt->fetchColumn()) {
-            $errors['duplicate'] = 'Budget already exists for this category and month.';
-        }
-    }
+    verifyCsrf();
+    [$fields, $errors] = $validateBudget(true);
 
     if (empty($errors)) {
         try {
@@ -176,61 +128,44 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btnUpdateBudget'])) {
                 WHERE id = :id AND user_id = :user_id
             ");
             $stmt->execute([
-                ':id' => $id,
-                ':user_id' => $_SESSION['user_id'],
-                ':category_id' => $categoryId,
-                ':amount' => (float) $amount,
-                ':month_year' => $monthYear,
+                ':id' => $fields['id'],
+                ':user_id' => $userId,
+                ':category_id' => $fields['categoryId'],
+                ':amount' => (float) $fields['amount'],
+                ':month_year' => $fields['monthYear'],
             ]);
 
             if ($stmt->rowCount() === 0) {
-                setFlash('error', 'Budget not found or access denied.');
-                header("Location: budgets.php");
-                exit;
+                setFlashAndRedirect('error', 'Budget not found or access denied.', 'budgets.php');
             }
 
-            setFlash('success', 'Budget has been updated!');
-            header("Location: budgets.php");
-            exit;
+            setFlashAndRedirect('success', 'Budget has been updated!', 'budgets.php');
         } catch (PDOException $e) {
-            if (($e->getCode() ?? '') === '23000') {
-                setFlash('error', 'Budget already exists for this category and month.');
-            } else {
-                setFlash('error', 'Something went wrong while updating budget.');
-            }
-            header("Location: budgets.php");
-            exit;
+            $handleBudgetException($e, 'updating');
         }
     }
 
-    setFlash('error', array_values($errors)[0]);
-    header("Location: budgets.php");
-    exit;
+    setFlashAndRedirect('error', array_values($errors)[0], 'budgets.php');
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btnDeleteBudget'])) {
+    verifyCsrf();
     $id = isset($_POST['id']) ? (int) $_POST['id'] : 0;
     if ($id <= 0) {
-        setFlash('error', 'Invalid budget ID.');
-        header("Location: budget.php");
-        exit;
+        setFlashAndRedirect('error', 'Invalid budget ID.', 'budgets.php');
     }
 
     $stmt = $pdo->prepare("DELETE FROM budgets WHERE id = :id AND user_id = :user_id");
     $stmt->execute([
         ':id' => $id,
-        ':user_id' => $_SESSION['user_id'],
+        ':user_id' => $userId,
     ]);
 
     if ($stmt->rowCount() === 0) {
-        setFlash('error', 'Budget not found or access denied.');
-        header("Location: budgets.php");
-        exit;
+        setFlashAndRedirect('error', 'Budget not found or access denied.', 'budgets.php');
     }
 
-    setFlash('success', 'Budget has been deleted!');
-    header("Location: budgets.php");
-    exit;
+    setFlashAndRedirect('success', 'Budget has been deleted!', 'budgets.php');
 }
 
 $stmt = $pdo->prepare("
@@ -249,27 +184,11 @@ $stmt = $pdo->prepare("
     GROUP BY b.id, b.user_id, b.category_id, b.amount, b.month_year, b.created_at, b.updated_at, c.name
     ORDER BY b.month_year DESC, b.id DESC
 ");
-$stmt->execute([':user_id' => $_SESSION['user_id']]);
+$stmt->execute([':user_id' => $userId]);
 $budgets = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 ob_start();
 include __DIR__ . '/../views/budgets/budget-view.php';
 $content = ob_get_clean();
 include __DIR__ . '/../views/components/layout.php';
-
-$flash = getFlash();
-if ($flash):
-?>
-<script>
-  Swal.fire({
-    toast: true,
-    position: "top-end",
-    icon: "<?= $flash['type'] ?>",
-    title: <?= json_encode($flash['message']) ?>,
-    showConfirmButton: false,
-    timer: 1500,
-    width: "500px",
-    timerProgressBar: true
-  });
-</script>
-<?php endif; ?>
+include __DIR__ . '/../views/components/flash-toast.php';

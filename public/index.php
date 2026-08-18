@@ -1,10 +1,7 @@
 <?php
-require __DIR__ . '/../src/helpers/url.php';
-require_once __DIR__ . '/../src/helpers/isLoggedIn.php';
-require_once __DIR__ . '/../src/bootstrap.php';
+require __DIR__ . '/../src/auth_page.php';
 
 $title = 'Dashboard - TraceX';
-$userId = (int) $_SESSION['user_id'];
 $currentMonthStart = date('Y-m-01');
 $nextMonthStart = date('Y-m-01', strtotime('+1 month'));
 $lastMonthStart = date('Y-m-01', strtotime('-1 month'));
@@ -55,13 +52,7 @@ $savingsChange = $getChange($monthlySavingsDeposits, $lastMonthSavingsDeposits);
 $savingsIsUp = $savingsChange['isUp'];
 $savingsPercent = $savingsChange['percent'];
 
-if (tableHasColumn($pdo, 'categories', 'user_id')) {
-  $stmt = $pdo->prepare('SELECT COUNT(*) FROM categories WHERE user_id IS NULL OR user_id = :user_id');
-  $stmt->execute([':user_id' => $userId]);
-} else {
-  $stmt = $pdo->query('SELECT COUNT(*) FROM categories');
-}
-$categoriesCount = (int) $stmt->fetchColumn();
+$categoriesCount = getVisibleCategoryCount($pdo, $userId);
 
 $monthMap = [];
 for ($i = 5; $i >= 0; $i--) {

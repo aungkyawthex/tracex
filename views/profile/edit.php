@@ -1,4 +1,5 @@
 <form action="profile.php?edit=1" method="POST" class="max-w-2xl">
+    <?= csrfField() ?>
     <div class="rounded-2xl border border-gray-200 bg-white shadow-sm">
         <div class="px-6 py-4 border-b border-gray-100">
             <div class="flex items-center gap-3">
@@ -13,6 +14,9 @@
         </div>
 
         <div class="px-6 py-6 space-y-5">
+            <?php if (!empty($updateErrors['update'])): ?>
+                <p class="rounded-lg border border-red-400 bg-red-100 px-4 py-3 text-sm text-red-700"><?= htmlspecialchars($updateErrors['update']) ?></p>
+            <?php endif; ?>
             <div>
                 <label class="block text-xs font-semibold tracking-wide text-gray-500 uppercase" for="profile-name">Full name</label>
                 <div class="mt-2">

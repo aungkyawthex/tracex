@@ -147,8 +147,10 @@ INSERT INTO `saving_transactions` (`id`, `saving_id`, `user_id`, `type`, `amount
 INSERT INTO `savings` (`id`, `user_id`, `name`, `description`, `target_amount`, `start_date`, `target_date`, `status`, `created_at`, `updated_at`) VALUES
 (1, 1, 'Dante Bailey', 'Iure qui quibusdam r', '56.00', '2026-02-18', '2026-03-18', 'active', '2026-02-18 16:52:01', '2026-02-18 16:53:36'),
 (2, 1, 'Barclay Mccullough', 'Ex odit quos quisqua', '1600.00', '2026-02-19', '2026-04-11', 'active', '2026-02-19 11:24:58', '2026-02-19 11:25:05');
+-- Credentials are intentionally not shipped in this dump.
+-- Register a user through the app, or set the password hash locally.
 INSERT INTO `users` (`id`, `name`, `email`, `password`, `role`, `created_at`, `updated_at`, `remember_token`, `token_expiry`) VALUES
-(1, 'Aung Kyaw Thet', 'admin@gmail.com', '$2y$10$YSOUDsmEw0gBWzOg/5TtZOU40jv7t8QEXOvFR7hXdHo6KDDNklMSi', 'user', '2026-02-18 16:36:40', '2026-02-19 11:23:38', '34d408150493c4b192d202442ddb9a82b192019ef1f143d64164c22f643209b6', '2026-02-20 04:53:38');
+(1, 'Demo User', 'demo@example.com', '', 'user', '2026-02-18 16:36:40', '2026-02-19 11:23:38', NULL, NULL);
 
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;

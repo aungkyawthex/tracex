@@ -1,4 +1,6 @@
 <?php
+    require_once __DIR__ . '/../../src/helpers/csrf.php';
+
     $userName = trim((string) ($_SESSION['user_name'] ?? 'Guest'));
     $nameParts = preg_split('/\s+/', $userName) ?: [];
     $initials = '';
@@ -80,11 +82,14 @@
       </div>
       <!-- Actions -->
       <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-        <a href="<?= url('src/helpers/logout.php') ?>" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2
+        <form action="<?= url('src/helpers/logout.php') ?>" method="POST" class="w-full sm:w-auto sm:ml-3">
+          <?= csrfField() ?>
+          <button type="submit" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2
             bg-red-600 text-base font-medium text-white hover:bg-red-700
-            focus:outline-none sm:ml-3 sm:w-auto sm:text-sm">
+            focus:outline-none sm:w-auto sm:text-sm cursor-pointer">
             Signout
-        </a>
+          </button>
+        </form>
 
         <button
           onclick="closeLogoutModal()"

@@ -1,16 +1,14 @@
 <?php
-require __DIR__ . '/../src/helpers/url.php';
-require_once __DIR__ . '/../src/helpers/isLoggedIn.php';
-require_once __DIR__ . '/../src/bootstrap.php';
+require __DIR__ . '/../src/auth_page.php';
 
 $title = 'Categories - TraceX';
-$userId = (int) $_SESSION['user_id'];
 $conditions = [];
 $params = [];
 
-if (tableHasColumn($pdo, 'categories', 'user_id')) {
-  $conditions[] = '(user_id IS NULL OR user_id = :user_id)';
-  $params[':user_id'] = $userId;
+$scope = getUserScopeCondition($pdo, 'categories', $userId);
+if ($scope['sql'] !== '') {
+  $conditions[] = $scope['sql'];
+  $params += $scope['params'];
 }
 
 $search = trim($_GET['search'] ?? '');

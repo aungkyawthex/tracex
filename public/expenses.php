@@ -1,46 +1,16 @@
 <?php
-require __DIR__ . '/../src/helpers/url.php';
-require __DIR__ . '/../src/helpers/flash.php';
-require_once __DIR__ . '/../src/helpers/isLoggedIn.php';
-require_once __DIR__ . '/../src/bootstrap.php';
+require __DIR__ . '/../src/auth_page.php';
 
 $title = 'Expenses - TraceX';
-$userId = (int) $_SESSION['user_id'];
 
-$hasCategoryUserId = tableHasColumn($pdo, 'categories', 'user_id');
 $hasPaymentMethodUserId = tableHasColumn($pdo, 'payment_methods', 'user_id');
 
-$getOptions = function (string $table, string $columns, bool $hasUserId) use ($pdo, $userId): array {
-  if (!$hasUserId) {
-    return $pdo->query("SELECT {$columns} FROM {$table} ORDER BY name ASC")->fetchAll(PDO::FETCH_ASSOC);
-  }
-
-  $stmt = $pdo->prepare("SELECT {$columns} FROM {$table} WHERE user_id IS NULL OR user_id = :user_id ORDER BY name ASC");
-  $stmt->execute([':user_id' => $userId]);
-
-  return $stmt->fetchAll(PDO::FETCH_ASSOC);
-};
-
-$isValidOption = function (string $table, int $id, bool $hasUserId) use ($pdo, $userId): bool {
-  $sql = "SELECT id FROM {$table} WHERE id = :id";
-  $params = [':id' => $id];
-
-  if ($hasUserId) {
-    $sql .= ' AND (user_id IS NULL OR user_id = :user_id)';
-    $params[':user_id'] = $userId;
-  }
-
-  $stmt = $pdo->prepare($sql);
-  $stmt->execute($params);
-
-  return (bool) $stmt->fetchColumn();
-};
-
-$category_items = $getOptions('categories', '*', $hasCategoryUserId);
-$payment_methods = $getOptions('payment_methods', $hasPaymentMethodUserId ? 'id, name, user_id' : 'id, name', $hasPaymentMethodUserId);
+$category_items = getVisibleLookupRows($pdo, 'categories', '*', $userId);
+$payment_methods = getVisibleLookupRows($pdo, 'payment_methods', $hasPaymentMethodUserId ? 'id, name, user_id' : 'id, name', $userId);
 $errors = [];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btnSaveExpense'])) {
+  verifyCsrf();
   $expenseDate = trim($_POST['expense_date'] ?? '');
   $amount = $_POST['amount'] ?? '';
   $categoryId = (int) ($_POST['category_id'] ?? 0);
@@ -59,26 +29,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btnSaveExpense'])) {
 
   if ($categoryId === 0) {
     $errors['category'] = 'Category is required';
-  } elseif (!$isValidOption('categories', $categoryId, $hasCategoryUserId)) {
+  } elseif (!isVisibleLookupId($pdo, 'categories', $categoryId, $userId)) {
     $errors['category'] = 'Selected category is invalid';
   }
 
   if ($paymentMethodId === 0) {
     $errors['payment_method'] = 'Payment method is required';
-  } elseif (!$isValidOption('payment_methods', $paymentMethodId, $hasPaymentMethodUserId)) {
+  } elseif (!isVisibleLookupId($pdo, 'payment_methods', $paymentMethodId, $userId)) {
     $errors['payment_method'] = 'Selected payment method is invalid';
   }
 
   if (empty($errors)) {
     $stmt = $pdo->prepare('INSERT INTO expenses (user_id, category_id, payment_method_id, amount, note, expense_date, status) VALUES (?, ?, ?, ?, ?, ?, ?)');
     $stmt->execute([$userId, $categoryId, $paymentMethodId, (float) $amount, $note, $expenseDate, isset($_POST['paid']) ? 'paid' : 'unpaid']);
-    setFlash('success', 'Expense has been added!');
+    setFlashAndRedirect('success', 'Expense has been added!', 'expenses.php');
   } else {
-    setFlash('error', 'Something went wrong!');
+    setFlashAndRedirect('error', array_values($errors)[0], 'expenses.php');
   }
-
-  header('Location: expenses.php');
-  exit;
 }
 
   $whereSql = "FROM expenses 
@@ -165,6 +132,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btnSaveExpense'])) {
                       <h3 class="text-lg leading-6 font-medium text-gray-900" id="expense-modal-title">Add New Expense</h3>
                       <div class="mt-2">
                           <form id="expenseForm" method="POST" action="">
+                              <?= csrfField() ?>
                               <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                                   <div>
                                       <label for="expense_date" class="block text-sm font-medium text-gray-700">Date</label>
@@ -192,7 +160,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btnSaveExpense'])) {
                                       <select id="categoty" name="category_id" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 sm:text-sm rounded-md cursor-pointer <?= isset($errors['category']) ? 'border-red-500' : '' ?>">
                                           <option value="">Category</option>
                                           <?php foreach($category_items as $item): ?>
-                                              <option value="<?= $item['id']?>"> <?= $item['name'] ?> </option>
+                                              <option value="<?= (int) $item['id'] ?>"> <?= htmlspecialchars($item['name'] ?? '') ?> </option>
                                           <?php endforeach ?>
                                       </select>
                                       <?php if (isset($errors['category'])): ?>
@@ -204,7 +172,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btnSaveExpense'])) {
                                       <select id="payment_method" name="payment_method" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 sm:text-sm rounded-md cursor-pointer <?= isset($errors['payment_method']) ? 'border-red-500' : '' ?>">
                                           <option value=""> Payment Method</option>
                                           <?php foreach ($payment_methods as $method): ?>
-                                              <option value="<?= $method['id'] ?>"><?= $method['name'] ?></option>
+                                              <option value="<?= (int) $method['id'] ?>"><?= htmlspecialchars($method['name'] ?? '') ?></option>
                                           <?php endforeach; ?>
                                       </select>
                                       <?php if (isset($errors['payment_method'])): ?>
@@ -255,6 +223,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btnSaveExpense'])) {
                         <h3 class="text-lg leading-6 font-medium text-gray-900" id="expense-modal-title">Edit expense</h3>
                         <div class="mt-2">
                             <form id="editExpenseForm" method="POST" action="update_expense.php">
+                                <?= csrfField() ?>
                                 <input type="hidden" name="edit_expense_id" id="edit_expense_id">
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                                     <div>
@@ -283,7 +252,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btnSaveExpense'])) {
                                         <select id="edit_category" name="category_id" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 sm:text-sm rounded-md cursor-pointer <?= isset($errors['category']) ? 'border-red-500' : '' ?>">
                                             <option value="">Category</option>
                                             <?php foreach($category_items as $item): ?>
-                                                <option value="<?= $item['id']?>"> <?= $item['name'] ?> </option>
+                                                <option value="<?= (int) $item['id'] ?>"> <?= htmlspecialchars($item['name'] ?? '') ?> </option>
                                             <?php endforeach ?>
                                         </select>
                                         <?php if (isset($errors['category'])): ?>
@@ -295,7 +264,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btnSaveExpense'])) {
                                         <select id="edit_payment_method" name="payment_method" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 sm:text-sm rounded-md cursor-pointer <?= isset($errors['payment_method']) ? 'border-red-500' : '' ?>">
                                             <option value=""> Payment method</option>
                                             <?php foreach ($payment_methods as $method): ?>
-                                                <option value="<?= $method['id'] ?>"><?= $method['name'] ?></option>
+                                                <option value="<?= (int) $method['id'] ?>"><?= htmlspecialchars($method['name'] ?? '') ?></option>
                                             <?php endforeach; ?>
                                         </select>
                                         <?php if (isset($errors['payment_method'])): ?>
@@ -358,6 +327,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btnSaveExpense'])) {
               </div>
           </div>
           <form action="delete_expense.php" method="POST">
+              <?= csrfField() ?>
               <input type="hidden" name="id" id="delete-id">
               <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
                   <button type="submit" name="btnDeleteExpense" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none sm:ml-3 sm:w-auto sm:text-sm cursor-pointer">
@@ -377,20 +347,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btnSaveExpense'])) {
   include __DIR__ . '/../views/components/layout.php';
 ?>
 
-<?php
- $flash = getFlash();
- if($flash):
-?>
-  <script>
-    Swal.fire({
-      toast: true,
-      position: "top-end",
-      icon: "<?= $flash['type'] ?>",
-      title: <?= json_encode($flash['message']) ?>,
-      showConfirmButton: false,
-      timer: 1500,
-      width: "500px",
-      timerProgressBar: true
-    });
-  </script>
-<?php endif; ?>
+<?php include __DIR__ . '/../views/components/flash-toast.php'; ?>

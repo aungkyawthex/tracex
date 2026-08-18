@@ -1,3 +1,13 @@
+<?php
+$navItems = [
+  ['label' => 'Dashboard', 'path' => 'public/index.php', 'icon' => 'fas fa-house'],
+  ['label' => 'Expenses', 'path' => 'public/expenses.php', 'icon' => 'fa-solid fa-dollar-sign'],
+  ['label' => 'Categories', 'path' => 'public/categories.php', 'icon' => 'fas fa-tags'],
+  ['label' => 'Savings', 'path' => 'public/savings.php', 'icon' => 'fas fa-piggy-bank'],
+  ['label' => 'Budgets', 'path' => 'public/budgets.php', 'icon' => 'fas fa-wallet'],
+  ['label' => 'Insights', 'path' => 'public/insights.php', 'icon' => 'fas fa-chart-line'],
+];
+?>
 <div class="hidden md:flex md:shrink-0">
   <div class="flex flex-col w-64 bg-blue-800">
     <div class="bg-blue-900 p-1">
@@ -8,30 +18,10 @@
     </div>
     <div class="flex flex-col flex-1 px-4 py-4 overflow-y-auto">
       <div class="space-y-1">
-        <a href="<?= url('public/index.php') ?>" class="flex items-center px-2 py-3 text-sm font-medium <?= isActive('public/index.php') ? 'text-white bg-blue-700' : 'text-indigo-200 hover:text-white hover:bg-blue-700' ?> rounded-lg">
-          <i class="fas fa-house mr-3"></i>
-          Dashboard
-        </a>
-        <a href="<?= url('public/expenses.php') ?>" class="flex items-center px-2 py-3 text-sm font-medium <?= isActive('public/expenses.php') ? 'text-white bg-blue-700' : 'text-indigo-200 hover:text-white hover:bg-blue-700' ?> rounded-lg">
-          <i class="fa-solid fa-dollar-sign mr-3"></i>
-          Expenses
-        </a>
-        <a href="<?= url('public/categories.php') ?>" class="flex items-center px-2 py-3 text-sm font-medium <?= isActive('public/categories.php') ? 'text-white bg-blue-700' : 'text-indigo-200 hover:text-white hover:bg-blue-700' ?> rounded-lg">
-          <i class="fas fa-tags mr-3"></i>
-          Categories
-        </a>
-        <a href="<?= url('public/savings.php') ?>" class="flex items-center px-2 py-3 text-sm font-medium <?= isActive('public/savings.php') ? 'text-white bg-blue-700' : 'text-indigo-200 hover:text-white hover:bg-blue-700' ?> rounded-lg">
-          <i class="fas fa-piggy-bank mr-3"></i>
-          Savings
-        </a>
-        <a href="<?= url('public/budgets.php') ?>" class="flex items-center px-2 py-3 text-sm font-medium <?= isActive('public/budgets.php') ? 'text-white bg-blue-700' : 'text-indigo-200 hover:text-white hover:bg-blue-700' ?> rounded-lg">
-          <i class="fas fa-wallet mr-3"></i>
-          Budgets
-        </a>
-        <a href="<?= url('public/insights.php') ?>" class="flex items-center px-2 py-3 text-sm font-medium <?= isActive('public/insights.php') ? 'text-white bg-blue-700' : 'text-indigo-200 hover:text-white hover:bg-blue-700' ?> rounded-lg">
-          <i class="fas fa-chart-line mr-3"></i>
-          Insights
-        </a>
+<?php
+$extraClass = '';
+include __DIR__ . '/sidebar-nav.php';
+?>
       </div>
     </div>
   </div>
@@ -51,30 +41,10 @@
     </div>
     <div class="flex flex-col px-4 py-4 overflow-y-auto">
       <div class="space-y-1">
-        <a href="<?= url('public/index.php') ?>" class="mobile-sidebar-link flex items-center px-2 py-3 text-sm font-medium <?= isActive('public/index.php') ? 'text-white bg-blue-700' : 'text-indigo-200 hover:text-white hover:bg-blue-700' ?> rounded-lg">
-          <i class="fas fa-house mr-3"></i>
-          Dashboard
-        </a>
-        <a href="<?= url('public/expenses.php') ?>" class="mobile-sidebar-link flex items-center px-2 py-3 text-sm font-medium <?= isActive('public/expenses.php') ? 'text-white bg-blue-700' : 'text-indigo-200 hover:text-white hover:bg-blue-700' ?> rounded-lg">
-          <i class="fa-solid fa-dollar-sign mr-3"></i>
-          Expenses
-        </a>
-        <a href="<?= url('public/categories.php') ?>" class="mobile-sidebar-link flex items-center px-2 py-3 text-sm font-medium <?= isActive('public/categories.php') ? 'text-white bg-blue-700' : 'text-indigo-200 hover:text-white hover:bg-blue-700' ?> rounded-lg">
-          <i class="fas fa-tags mr-3"></i>
-          Categories
-        </a>
-        <a href="<?= url('public/savings.php') ?>" class="mobile-sidebar-link flex items-center px-2 py-3 text-sm font-medium <?= isActive('public/savings.php') ? 'text-white bg-blue-700' : 'text-indigo-200 hover:text-white hover:bg-blue-700' ?> rounded-lg">
-          <i class="fas fa-piggy-bank mr-3"></i>
-          Savings
-        </a>
-        <a href="<?= url('public/budgets.php') ?>" class="mobile-sidebar-link flex items-center px-2 py-3 text-sm font-medium <?= isActive('public/budgets.php') ? 'text-white bg-blue-700' : 'text-indigo-200 hover:text-white hover:bg-blue-700' ?> rounded-lg">
-          <i class="fas fa-wallet mr-3"></i>
-          Budgets
-        </a>
-        <a href="<?= url('public/insights.php') ?>" class="mobile-sidebar-link flex items-center px-2 py-3 text-sm font-medium <?= isActive('public/insights.php') ? 'text-white bg-blue-700' : 'text-indigo-200 hover:text-white hover:bg-blue-700' ?> rounded-lg">
-          <i class="fas fa-chart-line mr-3"></i>
-          Insights
-        </a>
+<?php
+$extraClass = 'mobile-sidebar-link';
+include __DIR__ . '/sidebar-nav.php';
+?>
       </div>
     </div>
   </aside>
