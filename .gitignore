@@ -4,3 +4,4 @@ vendor/
 src/output.css
 config/db.php
 *.stackdump
+./vscode/sftp.json

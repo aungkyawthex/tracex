@@ -7,6 +7,7 @@ $navItems = [
   ['label' => 'Savings', 'path' => 'public/savings.php', 'icon' => 'fas fa-piggy-bank'],
   ['label' => 'Budgets', 'path' => 'public/budgets.php', 'icon' => 'fas fa-wallet'],
   ['label' => 'Insights', 'path' => 'public/insights.php', 'icon' => 'fas fa-chart-line'],
+  ['label' => 'Reports', 'path' => 'public/report.php', 'icon' => 'fas fa-chart-column'],
 ];
 ?>
 <div class="hidden md:flex md:shrink-0">
