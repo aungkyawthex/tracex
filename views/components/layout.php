@@ -1,9 +1,6 @@
 <?php
 include __DIR__ . '/head.php';
 ?>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/src/output.css">
   <!-- fontawesome -->
   <link rel="stylesheet" href="/public/assets/vendor/fontawesome-free-7.1.0-web/css/all.min.css">
@@ -46,6 +43,7 @@ include __DIR__ . '/head.php';
       });
     }
   </script>
+  <script src="/public/assets/js/components/button-loading.js"></script>
   <script src="/public/assets/js/app.main.js"></script>
 </body>
 </html>

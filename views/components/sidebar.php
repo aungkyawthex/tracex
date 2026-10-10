@@ -1,6 +1,7 @@
 <?php
 $navItems = [
   ['label' => 'Dashboard', 'path' => 'public/index.php', 'icon' => 'fas fa-house'],
+  ['label' => 'Income', 'path' => 'public/incomes.php', 'icon' => 'fas fa-sack-dollar'],
   ['label' => 'Expenses', 'path' => 'public/expenses.php', 'icon' => 'fa-solid fa-dollar-sign'],
   ['label' => 'Categories', 'path' => 'public/categories.php', 'icon' => 'fas fa-tags'],
   ['label' => 'Savings', 'path' => 'public/savings.php', 'icon' => 'fas fa-piggy-bank'],

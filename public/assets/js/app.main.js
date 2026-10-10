@@ -246,6 +246,47 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!modal) return;
         modal.classList.add('hidden');
     }
+    // incomes
+    function toggleModal(id, show) {
+        document.getElementById(id)?.classList.toggle('hidden', !show);
+    }
+
+    function openAddIncomeModal() { toggleModal('incomeModal', true); }
+    function closeAddIncomeModal() { toggleModal('incomeModal', false); }
+    function closeEditIncomeModal() { toggleModal('editIncomeModal', false); }
+    function closeDeleteIncomeModal() { toggleModal('deleteIncomeModal', false); }
+
+    function openEditIncomeModal(btn) {
+        document.getElementById('edit_income_id').value = btn.dataset.id || '';
+        document.getElementById('edit_income_type_id').value = btn.dataset.typeId || '';
+        document.getElementById('edit_income_amount').value = btn.dataset.amount || '';
+        document.getElementById('edit_income_month').value = btn.dataset.month || '';
+        document.getElementById('edit_income_note').value = btn.dataset.note || '';
+        toggleModal('editIncomeModal', true);
+    }
+
+    function openDeleteIncomeModal(id) {
+        document.getElementById('delete-income-id').value = id;
+        toggleModal('deleteIncomeModal', true);
+    }
+    // income types
+    function openAddIncomeTypeModal() { toggleModal('incomeTypeModal', true); }
+    function closeAddIncomeTypeModal() { toggleModal('incomeTypeModal', false); }
+    function closeEditIncomeTypeModal() { toggleModal('editIncomeTypeModal', false); }
+    function closeDeleteIncomeTypeModal() { toggleModal('deleteIncomeTypeModal', false); }
+
+    function openEditIncomeTypeModal(btn) {
+        document.getElementById('edit_income_type_id').value = btn.dataset.id || '';
+        document.getElementById('edit_income_type_name').value = btn.dataset.name || '';
+        document.getElementById('edit_income_type_icon').value = btn.dataset.icon || '';
+        document.getElementById('edit_income_type_color').value = btn.dataset.color || '#6B7280';
+        toggleModal('editIncomeTypeModal', true);
+    }
+
+    function openDeleteIncomeTypeModal(id) {
+        document.getElementById('delete-income-type-id').value = id;
+        toggleModal('deleteIncomeTypeModal', true);
+    }
     // reports
     // Expense Trend Chart
     const expenseTrendCanvas = document.getElementById('expenseTrendChart');

@@ -3,3 +3,4 @@ vendor/
 .phpunit.cache/
 src/output.css
 config/db.php
+*.stackdump
