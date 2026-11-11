@@ -1,5 +1,5 @@
 
-name: Deploy to InfinityFree
+name: Deploy TraceX to InfinityFree
 
 on:
   push:
@@ -10,15 +10,33 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: tracex-production-deployment
+  cancel-in-progress: false
+
 jobs:
   deploy:
+    name: Build and Deploy
     runs-on: ubuntu-latest
+    timeout-minutes: 15
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Deploy files via FTP
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build Tailwind CSS
+        run: npm run build
+
+      - name: Deploy to InfinityFree
         uses: SamKirkland/FTP-Deploy-Action@v4.4.0
         with:
           server: ${{ secrets.FTP_SERVER }}
@@ -28,16 +46,24 @@ jobs:
           port: 21
           local-dir: ./
           server-dir: htdocs/
+
+          dry-run: true
+          dangerous-clean-slate: false
+
           exclude: |
             **/.git*
             **/.git*/**
             **/.github/**
             **/node_modules/**
-            **/.env
-            **/.env.*
+            **/.env*
+            **/config/db.php
+            **/database/**
+            **/tests/**
+            **/vendor/**
+            **/package.json
+            **/package-lock.json
+            **/composer.json
+            **/composer.lock
+            **/phpunit.xml*
             **/README.md
             **/.vscode/**
-            **/tests/**
-            **/storage/logs/**
-            **/.ftp-deploy-sync-state.json
-          dangerous-clean-slate: false

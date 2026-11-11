@@ -94,6 +94,7 @@
     <div class="space-y-4">
         <?php
         $id = 'email';
+        $fieldName = 'email';
         $type = 'email';
         $label = 'Email';
         $placeholder = 'yourname@example.com';
@@ -104,6 +105,7 @@
         include __DIR__ . '/../views/components/form-field.php';
 
         $id = 'password';
+        $fieldName = 'password';
         $type = 'password';
         $label = 'Password';
         $placeholder = 'Enter your password';

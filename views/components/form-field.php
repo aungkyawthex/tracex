@@ -1,11 +1,11 @@
 <?php
 /**
- * Input field. Required: $id, $name, $label, $type.
+ * Input field. Required: $id, $fieldName, $label, $type.
  * Optional: $placeholder, $icon, $value, $error, $autocomplete,
  * $required (default true), $minlength, $toggle, $labelExtra (raw HTML after label).
  */
 $id = $id ?? '';
-$name = $name ?? $id;
+$name = $fieldName ?? $id;
 $label = $label ?? '';
 $type = $type ?? 'text';
 $placeholder = $placeholder ?? '';

@@ -98,6 +98,7 @@
     <div class="space-y-4">
         <?php
         $id = 'name';
+        $fieldName = 'name';
         $type = 'text';
         $label = 'Full name';
         $placeholder = 'John Doe';
@@ -108,6 +109,7 @@
         include __DIR__ . '/../views/components/form-field.php';
 
         $id = 'email';
+        $fieldName = 'email';
         $type = 'email';
         $label = 'Email';
         $placeholder = 'johndoe123@example.com';
@@ -118,6 +120,7 @@
         include __DIR__ . '/../views/components/form-field.php';
 
         $id = 'password';
+        $fieldName = 'password';
         $type = 'password';
         $label = 'Password';
         $placeholder = 'At least 8 characters';
@@ -130,7 +133,7 @@
         include __DIR__ . '/../views/components/form-field.php';
 
         $id = 'confirm-password';
-        $name = 'confirm_password';
+        $fieldName = 'confirm_password';
         $type = 'password';
         $label = 'Confirm password';
         $placeholder = 'Re-enter your password';
