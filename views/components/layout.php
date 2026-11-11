@@ -43,7 +43,7 @@ include __DIR__ . '/head.php';
       });
     }
   </script>
-  <script src="/public/assets/js/components/button-loading.js"></script>
+  <script src="/public/assets/js/button-loading.js"></script>
   <script src="/public/assets/js/app.main.js"></script>
 </body>
 </html>

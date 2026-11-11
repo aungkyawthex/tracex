@@ -45,6 +45,12 @@ startSession();
     <link rel="stylesheet" href="/src/output.css">
     <link rel="stylesheet" href="/public/assets/vendor/fontawesome-free-7.1.0-web/css/all.min.css">
     <link rel="icon" type="image/png" href="/public/assets/favicon.png">
+    <link rel="preload" href="/public/assets/vendor/fontawesome-free-7.1.0-web/webfonts/fa-solid-900.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/public/assets/vendor/fontawesome-free-7.1.0-web/webfonts/fa-regular-400.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/public/assets/vendor/fontawesome-free-7.1.0-web/webfonts/fa-brands-400.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400..800&display=swap" rel="stylesheet">
 </head>
 <body class="bg-white text-gray-800 antialiased">
     <nav class="sticky top-0 z-50 border-b border-gray-200 bg-white/90 backdrop-blur">
