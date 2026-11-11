@@ -7,7 +7,7 @@ include __DIR__ . '/head.php';
 </head>
 <body class="bg-gray-50 min-h-screen flex flex-col">
   <main class="flex-1 flex items-center justify-center px-4 py-12 sm:px-6">
-    <div class="w-full max-w-sm">
+    <div class="w-full max-w-sm content-enter">
       <a href="<?= url('index.php') ?>" class="inline-flex items-center gap-1.5 text-sm font-medium text-gray-500 hover:text-gray-700 transition-colors">
         <i class="fa-solid fa-arrow-left text-xs"></i>
         Back to home

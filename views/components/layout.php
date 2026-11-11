@@ -13,7 +13,7 @@ include __DIR__ . '/head.php';
       <?php
         include __DIR__ . '/navbar.php';
       ?>
-      <main class="flex-1 overflow-y-auto p-6 bg-gray-100">
+      <main class="flex-1 overflow-y-auto p-6 bg-gray-100 content-enter">
         <?= $content ?? '' ?>
       </main>
     </div>

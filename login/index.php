@@ -35,7 +35,7 @@
 
                 if($remember) {
                     $token = bin2hex(random_bytes(32));
-                    $expiry = time() + 60 * 60 * 24; // one day
+                    $expiry = time() + 60 * 60 * 24 * 30; // 30 days
 
                     // A failed remember-me token must not block an otherwise valid sign-in.
                     try {
@@ -122,7 +122,7 @@
     <div class="flex items-center mt-4">
         <input name="remember-me" id="remember-me" type="checkbox" class="h-4 w-4 accent-blue-600 cursor-pointer">
         <label for="remember-me" class="ml-2 block text-sm text-gray-600 select-none">
-            Remember me
+            Keep me signed in for 30 days
         </label>
     </div>
 

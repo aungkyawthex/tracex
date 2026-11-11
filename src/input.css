@@ -3,3 +3,19 @@
 * {
   font-family: 'Nunito', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
+
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes content-enter {
+    from {
+      transform: translateY(8px);
+    }
+    to {
+      transform: translateY(0);
+    }
+  }
+
+  .content-enter {
+    animation: content-enter 0.25s ease-out both;
+  }
+}
+
