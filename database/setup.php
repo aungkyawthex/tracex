@@ -43,6 +43,8 @@ class DatabaseMigration
         $this->createBudgetsTable();
         $this->createSavingsTable();
         $this->createSavingTransactionsTable();
+        $this->createIncomeTypesTable();
+        $this->createIncomesTable();
     }
 
     private function normalizeCharsets(): void
@@ -55,6 +57,8 @@ class DatabaseMigration
             'budgets',
             'savings',
             'saving_transactions',
+            'income_types',
+            'incomes',
         ];
 
         foreach ($tables as $table) {
@@ -231,10 +235,60 @@ class DatabaseMigration
         echo "Created/verified: saving_transactions\n";
     }
 
+    private function createIncomeTypesTable(): void
+    {
+        $sql = "
+            CREATE TABLE IF NOT EXISTS income_types (
+                id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+                user_id BIGINT UNSIGNED DEFAULT NULL,
+                name VARCHAR(100) NOT NULL,
+                icon VARCHAR(100) DEFAULT NULL,
+                color VARCHAR(50) DEFAULT NULL,
+                created_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                PRIMARY KEY (id),
+                UNIQUE KEY uniq_income_types_user_name (user_id, name),
+                CONSTRAINT fk_income_types_user
+                    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+        ";
+
+        $this->pdo->exec($sql);
+        echo "Created/verified: income_types\n";
+    }
+
+    private function createIncomesTable(): void
+    {
+        $sql = "
+            CREATE TABLE IF NOT EXISTS incomes (
+                id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+                user_id BIGINT UNSIGNED NOT NULL,
+                income_type_id BIGINT UNSIGNED NOT NULL,
+                amount DECIMAL(12,2) NOT NULL,
+                month_year DATE NOT NULL,
+                note TEXT,
+                created_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                PRIMARY KEY (id),
+                KEY idx_incomes_user_month (user_id, month_year),
+                KEY idx_incomes_type (income_type_id),
+                CONSTRAINT fk_incomes_user
+                    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+                CONSTRAINT fk_incomes_type
+                    FOREIGN KEY (income_type_id) REFERENCES income_types(id) ON DELETE RESTRICT,
+                CONSTRAINT incomes_chk_amount CHECK (amount > 0)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+        ";
+
+        $this->pdo->exec($sql);
+        echo "Created/verified: incomes\n";
+    }
+
     private function seedDefaults(): void
     {
         $this->seedCategories();
         $this->seedPaymentMethods();
+        $this->seedIncomeTypes();
     }
 
     private function seedCategories(): void
@@ -294,9 +348,39 @@ class DatabaseMigration
         echo "Seeded: default payment methods\n";
     }
 
+    private function seedIncomeTypes(): void
+    {
+        $defaultTypes = [
+            ['Salary', 'briefcase', '#10B981'],
+            ['Freelance', 'laptop', '#3B82F6'],
+            ['Business', 'store', '#F59E0B'],
+            ['Investment', 'chart-line', '#8B5CF6'],
+            ['Rental', 'house', '#06B6D4'],
+            ['Gift', 'gift', '#EC4899'],
+            ['Others', 'question', '#6B7280'],
+        ];
+
+        $existsStmt = $this->pdo->prepare("SELECT id FROM income_types WHERE user_id IS NULL AND name = :name LIMIT 1");
+        $insertStmt = $this->pdo->prepare("
+            INSERT INTO income_types (name, icon, color, user_id)
+            VALUES (:name, :icon, :color, NULL)
+        ");
+
+        foreach ($defaultTypes as [$name, $icon, $color]) {
+            $existsStmt->execute([':name' => $name]);
+            if ($existsStmt->fetchColumn()) {
+                continue;
+            }
+
+            $insertStmt->execute([':name' => $name, ':icon' => $icon, ':color' => $color]);
+        }
+
+        echo "Seeded: default income types\n";
+    }
+
     public function dropAllTables(bool $killConnections = false): void
     {
-        $tables = ['saving_transactions', 'savings', 'expenses', 'budgets', 'payment_methods', 'categories', 'users'];
+        $tables = ['incomes', 'income_types', 'saving_transactions', 'savings', 'expenses', 'budgets', 'payment_methods', 'categories', 'users'];
 
         if ($killConnections) {
             $this->killOtherConnections();

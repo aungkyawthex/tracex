@@ -4,23 +4,6 @@ require __DIR__ . '/../src/auth_page.php';
 $title = 'Budgets - TraceX';
 $errors = [];
 
-function normalizeBudgetMonth(string $value): ?string
-{
-    $value = trim($value);
-
-    if (preg_match('/^\d{4}-\d{2}$/', $value) === 1) {
-        $ts = strtotime($value . '-01');
-        return $ts === false ? null : date('Y-m-01', $ts);
-    }
-
-    if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $value) === 1) {
-        $ts = strtotime($value);
-        return $ts === false ? null : date('Y-m-01', $ts);
-    }
-
-    return null;
-}
-
 $categories = getVisibleLookupRows($pdo, 'categories', 'id, name', $userId);
 
 $validateBudget = function (bool $isUpdate) use ($pdo, $userId): array {
@@ -28,7 +11,7 @@ $validateBudget = function (bool $isUpdate) use ($pdo, $userId): array {
         'id' => isset($_POST['edit_budget_id']) ? (int) $_POST['edit_budget_id'] : 0,
         'categoryId' => isset($_POST['category_id']) ? (int) $_POST['category_id'] : 0,
         'amount' => $_POST['amount'] ?? '',
-        'monthYear' => normalizeBudgetMonth((string) ($_POST['month_year'] ?? '')),
+        'monthYear' => normalizeMonth((string) ($_POST['month_year'] ?? '')),
     ];
     $errors = [];
 

@@ -10,3 +10,6 @@ $metaDescription = $metaDescription ?? "Smart expense tracking and budgeting for
   <meta name="description" content="<?= htmlspecialchars($metaDescription) ?>">
   <title><?= htmlspecialchars($title) ?></title>
   <link rel="icon" type="image/png" href="/public/assets/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400..800&display=swap" rel="stylesheet">

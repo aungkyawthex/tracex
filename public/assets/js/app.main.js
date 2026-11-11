@@ -246,88 +246,44 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!modal) return;
         modal.classList.add('hidden');
     }
-    // reports
-    // Expense Trend Chart
-    const expenseTrendCanvas = document.getElementById('expenseTrendChart');
-    if (expenseTrendCanvas) {
-    const trendCtx = expenseTrendCanvas.getContext('2d');
-    new Chart(trendCtx, {
-        type: 'line',
-        data: {
-        labels: ['Jun 1', 'Jun 5', 'Jun 10', 'Jun 15', 'Jun 20', 'Jun 25', 'Jun 30'],
-        datasets: [{
-            label: 'Daily Expenses',
-            data: [85, 120, 95, 245, 180, 150, 90],
-            backgroundColor: 'rgba(99, 102, 241, 0.1)',
-            borderColor: '#6366F1',
-            borderWidth: 2,
-            tension: 0.3,
-            fill: true
-        }]
-        },
-        options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-            legend: {
-            display: false
-            },
-            tooltip: {
-            mode: 'index',
-            intersect: false
-            }
-        },
-        scales: {
-            y: {
-            beginAtZero: true,
-            grid: {
-                drawBorder: false
-            }
-            },
-            x: {
-            grid: {
-                display: false
-            }
-            }
-        }
-        }
-    });
+    // incomes
+    function toggleModal(id, show) {
+        document.getElementById(id)?.classList.toggle('hidden', !show);
     }
 
-    // Category Distribution Chart
-    const categoryDistributionCanvas = document.getElementById('categoryDistributionChart');
-    if (categoryDistributionCanvas) {
-    const categoryCtx = categoryDistributionCanvas.getContext('2d');
-    new Chart(categoryCtx, {
-        type: 'doughnut',
-        data: {
-        labels: ['Food & Dining', 'Shopping', 'Transportation', 'Utilities', 'Entertainment', 'Others'],
-        datasets: [{
-            data: [1245, 845, 520, 320, 215, 100],
-            backgroundColor: [
-            '#EF4444',
-            '#10B981',
-            '#3B82F6',
-            '#F59E0B',
-            '#8B5CF6',
-            '#64748B'
-            ],
-            borderWidth: 0
-        }]
-        },
-        options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-            legend: {
-            position: 'right',
-            labels: {
-                boxWidth: 12,
-                padding: 20
-            }
-            }
-        },
-        cutout: '70%'
-        }
-    });
+    function openAddIncomeModal() { toggleModal('incomeModal', true); }
+    function closeAddIncomeModal() { toggleModal('incomeModal', false); }
+    function closeEditIncomeModal() { toggleModal('editIncomeModal', false); }
+    function closeDeleteIncomeModal() { toggleModal('deleteIncomeModal', false); }
+
+    function openEditIncomeModal(btn) {
+        document.getElementById('edit_income_id').value = btn.dataset.id || '';
+        document.getElementById('edit_income_type_id').value = btn.dataset.typeId || '';
+        document.getElementById('edit_income_amount').value = btn.dataset.amount || '';
+        document.getElementById('edit_income_month').value = btn.dataset.month || '';
+        document.getElementById('edit_income_note').value = btn.dataset.note || '';
+        toggleModal('editIncomeModal', true);
+    }
+
+    function openDeleteIncomeModal(id) {
+        document.getElementById('delete-income-id').value = id;
+        toggleModal('deleteIncomeModal', true);
+    }
+    // income types
+    function openAddIncomeTypeModal() { toggleModal('incomeTypeModal', true); }
+    function closeAddIncomeTypeModal() { toggleModal('incomeTypeModal', false); }
+    function closeEditIncomeTypeModal() { toggleModal('editIncomeTypeModal', false); }
+    function closeDeleteIncomeTypeModal() { toggleModal('deleteIncomeTypeModal', false); }
+
+    function openEditIncomeTypeModal(btn) {
+        document.getElementById('edit_income_type_id').value = btn.dataset.id || '';
+        document.getElementById('edit_income_type_name').value = btn.dataset.name || '';
+        document.getElementById('edit_income_type_icon').value = btn.dataset.icon || '';
+        document.getElementById('edit_income_type_color').value = btn.dataset.color || '#6B7280';
+        toggleModal('editIncomeTypeModal', true);
+    }
+
+    function openDeleteIncomeTypeModal(id) {
+        document.getElementById('delete-income-type-id').value = id;
+        toggleModal('deleteIncomeTypeModal', true);
     }
