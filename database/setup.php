@@ -300,7 +300,7 @@ class DatabaseMigration
             ['Utilities', 'Electricity, water, internet, phone bills', 'lightbulb', '#F59E0B'],
             ['Shopping', 'Clothing, electronics, personal items', 'shopping-cart', '#EC4899'],
             ['Healthcare', 'Medical, pharmacy, insurance', 'heart', '#10B981'],
-            ['Education', 'Books, courses, tuition fees', 'graduation-cap', '#6366F1'],
+            ['Education', 'Books, courses, tuition fees', 'graduation-cap', '#2563EB'],
             ['Travel', 'Flights, hotels, vacation expenses', 'plane', '#06B6D4'],
             ['Bills & Payments', 'Rent, subscriptions, and bills', 'file-invoice-dollar', '#F97316'],
             ['Others', 'Miscellaneous expenses', 'question', '#6B7280'],

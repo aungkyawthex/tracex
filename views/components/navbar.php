@@ -29,7 +29,7 @@
         <div class="relative ml-3" id="user-dropdown">
           <div>
             <button type="button" id="user-menu-button" class="flex items-center focus:outline-none cursor-pointer">
-              <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-indigo-500 text-white text-xs font-semibold"><?= htmlspecialchars($initials) ?></span>
+              <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-blue-500 text-white text-xs font-semibold"><?= htmlspecialchars($initials) ?></span>
               <span class="ml-2 text-sm font-medium text-gray-700"><?= htmlspecialchars($userName) ?></span>
               <i class="fas fa-chevron-down ml-1 text-gray-500 text-xs"></i>
             </button>

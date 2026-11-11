@@ -55,7 +55,7 @@
                                         data-name="<?= htmlspecialchars($type['name'] ?? '') ?>"
                                         data-icon="<?= htmlspecialchars($type['icon'] ?? '') ?>"
                                         data-color="<?= htmlspecialchars($color) ?>"
-                                        class="text-indigo-600 hover:text-indigo-900 cursor-pointer mr-3"
+                                        class="text-blue-600 hover:text-blue-900 cursor-pointer mr-3"
                                     >
                                         <i class="fas fa-edit"></i>
                                     </button>

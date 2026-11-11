@@ -18,11 +18,11 @@
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div>
                 <label for="date-range" class="block text-sm font-medium text-gray-700 mb-1">Date Range</label>
-                <input id="date-range" name="date_range" value="<?php if(isset($_GET['date_range'])) echo htmlspecialchars($_GET['date_range']); ?>" type="text" class="flatpickr block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md placeholder:italic" placeholder="Select date range">
+                <input id="date-range" name="date_range" value="<?php if(isset($_GET['date_range'])) echo htmlspecialchars($_GET['date_range']); ?>" type="text" class="flatpickr block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md placeholder:italic" placeholder="Select date range">
             </div>
             <div>
                 <label for="category-filter" class="block text-sm font-medium text-gray-700 mb-1">Category</label>
-                <select id="category-filter" name="category_id" class="block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                <select id="category-filter" name="category_id" class="block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md">
                     <option value="">Select Category </option>
                         <?php foreach($category_items as $category_item): ?>
                             <option value="<?= (int) ($category_item['id'] ?? 0) ?>" <?php if (isset($_GET['category_id']) && $_GET['category_id'] == $category_item['id']) echo 'selected'; ?>> <?= htmlspecialchars($category_item['name'] ?? '') ?> </option>
@@ -32,8 +32,8 @@
             <div>
                 <label for="amount-range" class="block text-sm font-medium text-gray-700 mb-1">Amount Range</label>
                 <div class="flex space-x-2">
-                    <input value="<?php if(isset($_GET['min_amount'])) echo htmlspecialchars($_GET['min_amount']); ?>" type="number" id="min-amount" name="min_amount" placeholder="Min" class="block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
-                    <input value="<?php if(isset($_GET['max_amount'])) echo htmlspecialchars($_GET['max_amount']); ?>" type="number" id="max-amount" name="max_amount" placeholder="Max" class="block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                    <input value="<?php if(isset($_GET['min_amount'])) echo htmlspecialchars($_GET['min_amount']); ?>" type="number" id="min-amount" name="min_amount" placeholder="Min" class="block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md">
+                    <input value="<?php if(isset($_GET['max_amount'])) echo htmlspecialchars($_GET['max_amount']); ?>" type="number" id="max-amount" name="max_amount" placeholder="Max" class="block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md">
                 </div>
             </div>
             <div class="flex items-end space-x-3 justify-end">

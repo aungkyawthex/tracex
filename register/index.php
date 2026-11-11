@@ -85,124 +85,90 @@
     }
 ?>
 <?php if($success): ?>
-    <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
-        <strong class="font-bold">Success!</strong>
-        <span class="block sm:inline">Registration successful. Redirecting...</span>
-    </div>
+    <?php $type = 'success'; $message = 'Registration successful. Redirecting...'; include __DIR__ . '/../views/components/alert.php'; ?>
 <?php elseif (isset($errors['database'])): ?>
-    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
-        <strong class="font-bold">Error!</strong>
-        <span class="block sm:inline"><?= htmlspecialchars($errors['database']) ?></span>
-    </div>
+    <?php $type = 'error'; $message = $errors['database']; include __DIR__ . '/../views/components/alert.php'; ?>
 <?php endif ?>
 
-<div class="bg-white rounded-lg shadow-xl p-8 mb-0">
-    <div class="text-center mb-8">
-        <h1 class="text-3xl font-bold text-indigo-600">TraceX </h1>
+<h1 class="text-xl font-bold text-gray-900">Create your account</h1>
+<p class="mt-1 text-sm text-gray-500">Start tracking your expenses today.</p>
+
+<form method="POST" action="" class="mt-6">
+    <?= csrfField() ?>
+    <div class="space-y-4">
+        <?php
+        $id = 'name';
+        $type = 'text';
+        $label = 'Full name';
+        $placeholder = 'John Doe';
+        $icon = 'fa-regular fa-user';
+        $autocomplete = 'name';
+        $value = $name ?? '';
+        $error = $errors['name'] ?? null;
+        include __DIR__ . '/../views/components/form-field.php';
+
+        $id = 'email';
+        $type = 'email';
+        $label = 'Email';
+        $placeholder = 'johndoe123@example.com';
+        $icon = 'fa-regular fa-envelope';
+        $autocomplete = 'email';
+        $value = $email ?? '';
+        $error = $errors['email'] ?? null;
+        include __DIR__ . '/../views/components/form-field.php';
+
+        $id = 'password';
+        $type = 'password';
+        $label = 'Password';
+        $placeholder = 'At least 8 characters';
+        $icon = 'fa-solid fa-lock text-xs';
+        $autocomplete = 'new-password';
+        $minlength = 8;
+        $value = '';
+        $toggle = true;
+        $error = $errors['password'] ?? null;
+        include __DIR__ . '/../views/components/form-field.php';
+
+        $id = 'confirm-password';
+        $name = 'confirm_password';
+        $type = 'password';
+        $label = 'Confirm password';
+        $placeholder = 'Re-enter your password';
+        $icon = 'fa-solid fa-lock text-xs';
+        $autocomplete = 'new-password';
+        $minlength = null;
+        $value = '';
+        $toggle = true;
+        $error = $errors['confirm_password'] ?? null;
+        include __DIR__ . '/../views/components/form-field.php';
+        ?>
     </div>
-    
-    <form method="POST" action="index.php">
-        <?= csrfField() ?>
-        <div class="mb-4">
-            <label class="block text-gray-700 text-sm font-bold mb-2" for="name">
-                Name
+
+    <div class="mt-4">
+        <div class="flex items-start">
+            <input id="terms" type="checkbox" name="terms" required class="h-4 w-4 mt-0.5 accent-blue-600 cursor-pointer">
+            <label for="terms" class="ml-2 block text-sm text-gray-600 select-none">
+                I agree to the <a href="<?= url('terms-and-conditions.php') ?>" target="_blank" class="font-semibold text-blue-600 hover:text-blue-500">Terms &amp; Conditions</a>
             </label>
-            <input class="appearance-none border border-gray-300 rounded-lg w-full py-2 px-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 <?= isset($errors['name']) ? 'border-red-500' : '' ?>" 
-                id="name" 
-                type="text" 
-                name="name" 
-                placeholder="John Doe"
-                value="<?= htmlspecialchars($name ?? '') ?>">
-                <?php if (isset($errors['name'])): ?>
-                    <p class="text-red-500 text-xs italic mt-1"><?= htmlspecialchars($errors['name']) ?></p>
-                <?php endif; ?>
         </div>
-            
-        <div class="mb-4">
-            <label class="block text-gray-700 text-sm font-bold mb-2" for="email">
-                Email
-            </label>
-            <input class="appearance-none border border-gray-300 rounded-lg w-full py-2 px-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 <?= isset($errors['email']) ? 'border-red-500' : '' ?>"
-            id="email" 
-            name="email" 
-            type="email" 
-            placeholder="johndoe123@example.com"
-            value="<?= htmlspecialchars($email ?? '') ?>">
-            <?php if (isset($errors['email'])): ?>
-                <p class="text-red-500 text-xs italic mt-1"><?= htmlspecialchars($errors['email']) ?></p>
-            <?php endif; ?>
-        </div>
-            
-        <div class="mb-4">
-            <label class="block text-gray-700 text-sm font-bold mb-2" for="password">
-                Password
-            </label>
-            <div class="relative">
-                <input class="appearance-none border border-gray-300 rounded-lg w-full py-2 px-3 pr-10 text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 <?= isset($errors['password']) ? 'border-red-500' : '' ?>" 
-                    id="password" 
-                    type="password" 
-                    name="password" 
-                    placeholder="password">
-                <button type="button" data-password-toggle="password" aria-label="Show password" aria-pressed="false"
-                    class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 hover:text-gray-700 focus:outline-none cursor-pointer">
-                    <i class="fa-solid fa-eye toggle-show"></i>
-                    <i class="fa-solid fa-eye-slash toggle-hide" style="display:none"></i>
-                </button>
-            </div>
-                <?php if (isset($errors['password'])): ?>
-                    <p class="text-red-500 text-xs italic mt-1"><?= htmlspecialchars($errors['password']) ?></p>
-                <?php endif; ?>
-        </div>
-            
-        <div class="mb-6">
-            <label class="block text-gray-700 text-sm font-bold mb-2" for="confirm_password">
-                Confirm Password
-            </label>
-            <div class="relative">
-                <input class="appearance-none border border-gray-300 rounded-lg w-full py-2 px-3 pr-10 text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 <?= isset($errors['confirm_password']) ? 'border-red-500' : '' ?>" 
-                id="confirm-password" 
-                type="password" 
-                name="confirm_password" 
-                placeholder="Confirm password">
-                <button type="button" data-password-toggle="confirm-password" aria-label="Show password" aria-pressed="false"
-                    class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 hover:text-gray-700 focus:outline-none cursor-pointer">
-                    <i class="fa-solid fa-eye toggle-show"></i>
-                    <i class="fa-solid fa-eye-slash toggle-hide" style="display:none"></i>
-                </button>
-            </div>
-            <?php if (isset($errors['confirm_password'])): ?>
-                <p class="text-red-500 text-xs italic mt-1"><?= htmlspecialchars($errors['confirm_password']) ?></p>
-            <?php endif; ?>
-        </div>
-        
-        <div class="mb-6">
-            <div class="flex items-center">
-                <input id="terms" type="checkbox" class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded <?= isset($errors['terms']) ? 'border-red-500' : '' ?>" name="terms">
-                <label for="terms" class="ml-2 block text-sm text-gray-700">
-                    I agree to the <a href="<?= url('terms-and-conditions.php') ?>" class="text-indigo-600 hover:text-indigo-700 cursor-pointer">Terms & Conditions</a>
-                </label>
-            </div>
-            <?php if (isset($errors['terms'])): ?>
-                <p class="text-red-500 text-xs italic mt-1"><?= htmlspecialchars($errors['terms']) ?></p>
-            <?php endif; ?>
-        </div>
-        
-        <button 
-            type="submit" 
-            name="btnSignUp"
-            class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:shadow-outline transition duration-150 cursor-pointer">
-            Sign Up
-        </button>
-    </form>
-    
-    <div class="mt-6 text-center">
-        <p class="text-gray-600 text-sm">
-            Already have an account? 
-            <a href="<?= url('login/index.php') ?>" class="text-indigo-600 hover:text-indigo-500 font-medium">Sign in</a>
-        </p>
+        <?php if (isset($errors['terms'])): ?>
+            <p class="text-red-600 text-xs mt-1"><?= htmlspecialchars($errors['terms']) ?></p>
+        <?php endif; ?>
     </div>
+
+    <button
+        type="submit"
+        name="btnSignUp"
+        class="mt-6 w-full rounded-lg bg-blue-600 py-2.5 text-sm font-semibold text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors cursor-pointer">
+        Create account
+    </button>
+</form>
+
+<div class="mt-6 text-center text-sm text-gray-500">
+    Already have an account?
+    <a href="<?= url('login/index.php') ?>" class="font-semibold text-blue-600 hover:text-blue-500">Sign in</a>
 </div>
-<?php include __DIR__ . '/../views/components/copyright.php'; ?>
+
 <?php
 $content = ob_get_clean();
 include __DIR__ . '/../views/components/auth_layout.php';

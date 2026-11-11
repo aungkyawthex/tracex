@@ -30,7 +30,7 @@
                                     'Shopping'        => ['icon' => 'fa-shopping-cart', 'bg' => 'bg-rose-100',    'text' => 'text-rose-800'],
                                     'Healthcare'      => ['icon' => 'fa-heartbeat',     'bg' => 'bg-green-100',   'text' => 'text-green-800'],
                                     'Travel'          => ['icon' => 'fa-plane',         'bg' => 'bg-sky-100',  'text' => 'text-cyan-800'],
-                                    'Education'       => ['icon' => 'fa-book',          'bg' => 'bg-indigo-100',  'text' => 'text-indigo-800'],
+                                    'Education'       => ['icon' => 'fa-book',          'bg' => 'bg-blue-100',  'text' => 'text-blue-800'],
                                     'Bills & Payments' => ['icon' => 'fa-file-invoice-dollar', 'bg' => 'bg-orange-100', 'text' => 'text-orange-800'],
                                     'Others'          => ['icon' => 'fa-ellipsis-h',     'bg' => 'bg-gray-100', 'text' => 'text-gray-800']
                                 ];
@@ -78,7 +78,7 @@
                                     data-payment-method-id="<?= (int) ($expense['payment_method_id'] ?? 0) ?>"
                                     data-note="<?= htmlspecialchars($expense['note'] ?? '') ?>"
                                     data-status="<?= ($expense['status'] ?? '') ?>"
-                                    class="text-indigo-600 hover:text-indigo-900 cursor-pointer mr-3"> 
+                                    class="text-blue-600 hover:text-blue-900 cursor-pointer mr-3"> 
                                     <i class="fas fa-edit"></i>
                                 </button>
                                 <button onclick="openDeleteExpenseModal(<?= (int) ($expense['id'] ?? 0) ?>)"

@@ -13,8 +13,8 @@
                     <i class="fas fa-arrow-<?= $isUp ? 'up' : 'down' ?>"></i> <?= number_format($percent, 0) ?>% from last month
                 </p>
             </div>
-            <div class="bg-indigo-100 p-3 rounded-full">
-                <i class="fas fa-wallet text-indigo-600 text-xl"></i>
+            <div class="bg-blue-100 p-3 rounded-full">
+                <i class="fas fa-wallet text-blue-600 text-xl"></i>
             </div>
         </div>
     </div>

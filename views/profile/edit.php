@@ -3,7 +3,7 @@
     <div class="rounded-2xl border border-gray-200 bg-white shadow-sm">
         <div class="px-6 py-4 border-b border-gray-100">
             <div class="flex items-center gap-3">
-                <span class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-indigo-50 text-indigo-600">
+                <span class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-blue-50 text-blue-600">
                     <i class="fas fa-user-circle"></i>
                 </span>
                 <div>
@@ -23,7 +23,7 @@
                     <input type="text"
                         id="profile-name"
                         name="name"
-                        class="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-900 placeholder-gray-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none"
+                        class="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none"
                         value="<?= htmlspecialchars($user['name'] ?? '') ?>"
                     />
                 </div>
@@ -38,7 +38,7 @@
                     <input type="email"
                         id="profile-email"
                         name="email"
-                        class="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-900 placeholder-gray-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none"
+                        class="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none"
                         value="<?= htmlspecialchars($user['email'] ?? '') ?>"
                     />
                 </div>
@@ -51,7 +51,7 @@
         <div class="px-6 py-4 border-t border-gray-100 bg-gray-50/60 rounded-b-2xl">
             <div class="flex flex-wrap gap-3">
                 <a href="profile.php" class="px-4 py-2 rounded-lg border border-gray-300 text-sm font-semibold text-gray-700 hover:bg-white cursor-pointer">Cancel</a>
-                <button type="submit" name="btnUpdateProfile" class="px-5 py-2 rounded-lg bg-indigo-600 text-sm font-semibold text-white hover:bg-indigo-700 cursor-pointer">Save changes</button>
+                <button type="submit" name="btnUpdateProfile" class="px-5 py-2 rounded-lg bg-blue-600 text-sm font-semibold text-white hover:bg-blue-700 cursor-pointer">Save changes</button>
             </div>
         </div>
     </div>

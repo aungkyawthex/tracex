@@ -62,7 +62,7 @@
                                     data-category-id="<?= (int) ($budget['category_id'] ?? 0) ?>"
                                     data-amount="<?= htmlspecialchars((string) ($budget['amount'] ?? '')) ?>"
                                     data-month="<?= htmlspecialchars($monthValue) ?>"
-                                    class="text-indigo-600 hover:text-indigo-900 cursor-pointer mr-3"
+                                    class="text-blue-600 hover:text-blue-900 cursor-pointer mr-3"
                                 >
                                     <i class="fas fa-edit"></i>
                                 </button>

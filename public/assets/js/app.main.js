@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 datasets: [{
                     label: 'Expenses',
                     data: monthlyValues,
-                    backgroundColor: '#6366F1',
+                    backgroundColor: '#2563EB',
                     borderRadius: 6
                 }]
             },
@@ -63,7 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 datasets: [{
                     data: breakdownValues,
                     backgroundColor: [
-                        '#6366F1',
+                        '#2563EB',
                         '#10B981',
                         '#F59E0B',
                         '#8B5CF6',

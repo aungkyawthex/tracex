@@ -4,7 +4,7 @@
         <div class="flex items-center justify-between mb-4">
             <h2 class="text-lg font-semibold text-gray-800">Monthly Expenses</h2>
             <!-- <div class="flex">
-                <button class="px-3 py-1 text-sm bg-indigo-100 text-indigo-700 rounded-l-lg">Month</button>
+                <button class="px-3 py-1 text-sm bg-blue-100 text-blue-700 rounded-l-lg">Month</button>
                 <button class="px-3 py-1 text-sm bg-white text-gray-600 border border-l-0 border-gray-200">Quarter</button>
                 <button class="px-3 py-1 text-sm bg-white text-gray-600 border border-l-0 border-gray-200 rounded-r-lg">Year</button>
             </div> -->

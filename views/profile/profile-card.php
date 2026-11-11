@@ -23,7 +23,7 @@
     <div class="px-6 py-5 border-b border-gray-100">
       <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div class="flex items-center gap-4">
-          <div class="h-14 w-14 rounded-full bg-indigo-600 text-white text-xl font-semibold flex items-center justify-center shadow-sm">
+          <div class="h-14 w-14 rounded-full bg-blue-600 text-white text-xl font-semibold flex items-center justify-center shadow-sm">
             <?= htmlspecialchars($profileInitials) ?>
           </div>
           <div>
@@ -33,7 +33,7 @@
             <p class="text-sm text-gray-500">Account overview</p>
           </div>
         </div>
-        <a href="<?= url('public/profile.php?edit') ?>" class="inline-flex items-center justify-center gap-2 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-700">
+        <a href="<?= url('public/profile.php?edit') ?>" class="inline-flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700">
           <i class="fas fa-edit"></i>
           Edit profile
         </a>

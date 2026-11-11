@@ -50,7 +50,7 @@
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"><?= number_format($current, 0) ?> MMK</td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="w-44 bg-gray-200 rounded-full h-2.5">
-                                    <div class="bg-indigo-600 h-2.5 rounded-full" style="width: <?= number_format($progress, 2, '.', '') ?>%"></div>
+                                    <div class="bg-blue-600 h-2.5 rounded-full" style="width: <?= number_format($progress, 2, '.', '') ?>%"></div>
                                 </div>
                                 <div class="text-xs text-gray-500 mt-1"><?= number_format($progress, 0) ?>%</div>
                             </td>
@@ -76,7 +76,7 @@
                                     data-start-date="<?= htmlspecialchars($saving['start_date'] ?? '') ?>"
                                     data-target-date="<?= htmlspecialchars($saving['target_date'] ?? '') ?>"
                                     data-status="<?= htmlspecialchars($saving['status'] ?? 'active') ?>"
-                                    class="text-indigo-600 hover:text-indigo-900 cursor-pointer mr-3"
+                                    class="text-blue-600 hover:text-blue-900 cursor-pointer mr-3"
                                 >
                                     <i class="fas fa-edit"></i>
                                 </button>

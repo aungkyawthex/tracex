@@ -46,7 +46,7 @@
                         'lightbulb' => 'bg-yellow-100',
                         'shopping-cart' => 'bg-rose-100',
                         'heart' => 'bg-green-100',
-                        'graduation-cap' => 'bg-indigo-100',
+                        'graduation-cap' => 'bg-blue-100',
                         'plane' => 'bg-sky-100',
                         'file-invoice-dollar' => 'bg-orange-100',
                         'question' => 'bg-gray-100'
@@ -70,7 +70,7 @@
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"> <?= $expenseCounts[$category['id']] ?? 0 ?> </td>
                             <!-- <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                 <button onclick="openEditCategoryModal()" 
-                                    class="text-indigo-600 hover:text-indigo-900 mr-3 cursor-pointer" 
+                                    class="text-blue-600 hover:text-blue-900 mr-3 cursor-pointer" 
                                     title="Edit Category">
                                     <i class="fas fa-edit"></i>
                                 </button>

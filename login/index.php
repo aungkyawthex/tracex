@@ -83,80 +83,59 @@
     }
 ?>
 <?php if (!empty($email) && !empty($password) && isset($errors['login'])): ?>
-    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
-        <strong class="font-bold">Error!</strong>
-        <span class="block sm:inline"><?= htmlspecialchars($errors['login']) ?></span>
-    </div>
+    <?php $message = $errors['login']; include __DIR__ . '/../views/components/alert.php'; ?>
 <?php endif; ?>
 
-<div class="bg-white rounded-lg shadow-xl p-8">
-    <div class="text-center mb-8">
-        <h1 class="text-3xl font-bold text-indigo-600">TraceX</h1>
+<h1 class="text-xl font-bold text-gray-900">Sign in to your account</h1>
+<p class="mt-1 text-sm text-gray-500">Welcome back. Please enter your details.</p>
+
+<form method="POST" action="" class="mt-6">
+    <?= csrfField() ?>
+    <div class="space-y-4">
+        <?php
+        $id = 'email';
+        $type = 'email';
+        $label = 'Email';
+        $placeholder = 'yourname@example.com';
+        $icon = 'fa-regular fa-envelope';
+        $autocomplete = 'email';
+        $value = $email ?? '';
+        $error = $errors['email'] ?? null;
+        include __DIR__ . '/../views/components/form-field.php';
+
+        $id = 'password';
+        $type = 'password';
+        $label = 'Password';
+        $placeholder = 'Enter your password';
+        $icon = 'fa-solid fa-lock text-xs';
+        $autocomplete = 'current-password';
+        $value = '';
+        $toggle = true;
+        $labelExtra = '<a href="#" class="text-xs font-medium text-blue-600 hover:text-blue-500">Forgot password?</a>';
+        $error = $errors['password'] ?? null;
+        include __DIR__ . '/../views/components/form-field.php';
+        ?>
     </div>
-    
-    <form method="POST" action="">
-        <?= csrfField() ?>
-        <div class="mb-4">
-            <label class="block text-gray-700 text-sm font-bold mb-2" for="email">
-                Email
-            </label>
-            <input class="bg-gray-50 py-2 px-3 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 block w-full <?= isset($errors['email']) ? 'border-red-500' : '' ?>" 
-                id="email" 
-                type="email" 
-                placeholder="yourname@example.com"
-                name="email"
-                value="<?= htmlspecialchars($email ?? '') ?>">
-                <?php if (isset($errors['email'])): ?>
-                    <p class="text-red-500 text-xs italic mt-1"><?= htmlspecialchars($errors['email']) ?></p>
-                <?php endif; ?>
-        </div>
-        <div class="mb-6">
-            <label class="block text-gray-700 text-sm font-bold mb-2" for="password">
-                Password
-            </label>
-            <div class="relative">
-                <input class="bg-gray-50 py-2 px-3 pr-10 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 block w-full <?= isset($errors['password']) ? 'border-red-500' : '' ?>" 
-                    id="password" 
-                    type="password" 
-                    placeholder="Enter your password"
-                    name="password">
-                <button type="button" data-password-toggle="password" aria-label="Show password" aria-pressed="false"
-                    class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 hover:text-gray-700 focus:outline-none cursor-pointer">
-                    <i class="fa-solid fa-eye toggle-show"></i>
-                    <i class="fa-solid fa-eye-slash toggle-hide" style="display:none"></i>
-                </button>
-            </div>
-                <?php if (isset($errors['password'])): ?>
-                    <p class="text-red-500 text-xs italic mt-1"><?= htmlspecialchars($errors['password']) ?></p>
-                <?php endif; ?>
-        </div>
-        <div class="flex items-center justify-between mb-6">
-            <div class="flex items-center">
-                <input name="remember-me" id="remember-me" type="checkbox" class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded">
-                <label for="remember-me" class="ml-2 block text-sm text-gray-700">
-                    Remember me
-                </label>
-            </div>
-            <a href="#" class="text-sm text-indigo-600 hover:text-indigo-500">
-                Forgot password?
-            </a>
-        </div>
-        <button 
-            class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:shadow-outline transition duration-150 cursor-pointer" 
-            type="submit"
-            name="btnSignIn">
-            Sign In
-        </button>
-    </form>
-    
-    <div class="mt-6 text-center">
-        <p class="text-gray-600 text-sm">
-            New to TraceX? 
-            <a href="<?= url('register/index.php') ?>" class="text-indigo-600 hover:text-indigo-500 font-medium">Sign up</a>
-        </p>
+
+    <div class="flex items-center mt-4">
+        <input name="remember-me" id="remember-me" type="checkbox" class="h-4 w-4 accent-blue-600 cursor-pointer">
+        <label for="remember-me" class="ml-2 block text-sm text-gray-600 select-none">
+            Remember me
+        </label>
     </div>
+
+    <button
+        class="mt-6 w-full rounded-lg bg-blue-600 py-2.5 text-sm font-semibold text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors cursor-pointer"
+        type="submit"
+        name="btnSignIn">
+        Sign In
+    </button>
+</form>
+
+<div class="mt-6 text-center text-sm text-gray-500">
+    Don't have an account?
+    <a href="<?= url('register/index.php') ?>" class="font-semibold text-blue-600 hover:text-blue-500">Sign up</a>
 </div>
-<?php include __DIR__ . '/../views/components/copyright.php'; ?>
 
 <?php
 $content = ob_get_clean();

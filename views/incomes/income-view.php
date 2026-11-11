@@ -65,7 +65,7 @@
                                     data-amount="<?= htmlspecialchars((string) $income['amount']) ?>"
                                     data-month="<?= date('Y-m', $monthTs) ?>"
                                     data-note="<?= htmlspecialchars($income['note'] ?? '') ?>"
-                                    class="text-indigo-600 hover:text-indigo-900 cursor-pointer mr-3"
+                                    class="text-blue-600 hover:text-blue-900 cursor-pointer mr-3"
                                 >
                                     <i class="fas fa-edit"></i>
                                 </button>

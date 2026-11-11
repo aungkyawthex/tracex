@@ -16,11 +16,11 @@ startSession();
     <meta property="og:description" content="Track spending, manage budgets, and get clear insights with TraceX.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="<?= htmlspecialchars($baseUrl) ?>">
-    <meta property="og:image" content="<?= htmlspecialchars(url('public/assets/test.png')) ?>">
+    <meta property="og:image" content="<?= htmlspecialchars(url('public/assets/favicon.png')) ?>">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="TraceX - Smart expense tracker">
     <meta name="twitter:description" content="Track spending, manage budgets, and get clear insights with TraceX.">
-    <meta name="twitter:image" content="<?= htmlspecialchars(url('public/assets/test.png')) ?>">
+    <meta name="twitter:image" content="<?= htmlspecialchars(url('public/assets/favicon.png')) ?>">
     <script type="application/ld+json">
         <?= json_encode([
             [
@@ -28,7 +28,7 @@ startSession();
                 '@type' => 'Organization',
                 'name' => 'TraceX',
                 'url' => $baseUrl,
-                'logo' => url('public/assets/test.png'),
+                'logo' => url('public/assets/favicon.png'),
                 'sameAs' => [
                     'https://github.com/aungkyawthetx'
                 ]
@@ -50,22 +50,22 @@ startSession();
     <nav class="sticky top-0 z-50 border-b border-gray-200 bg-white/90 backdrop-blur">
         <div class="max-w-7xl mx-auto px-5 py-4 flex items-center justify-between">
             <a href="/" class="flex items-center gap-2">
-                <img src="/public/assets/test.png" alt="TraceX Logo" class="h-9 rounded-lg">
+                <?php $variant = 'dark'; $size = 'md'; include __DIR__ . '/views/components/logo.php'; ?>
             </a>
 
             <div class="hidden md:flex items-center gap-3">
                 <?php if (isset($_SESSION['user_id'])): ?>
-                    <a href="<?= url('public/index.php') ?>" class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-indigo-600">
+                    <a href="<?= url('public/index.php') ?>" class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-blue-600">
                         Dashboard
                     </a>
-                    <a href="<?= url('src/helpers/logout.php') ?>" class="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition-all">
+                    <a href="<?= url('src/helpers/logout.php') ?>" class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-all">
                         Logout
                     </a>
                 <?php else: ?>
-                    <a href="<?= url('login/index.php') ?>" class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-indigo-600">
+                    <a href="<?= url('login/index.php') ?>" class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-blue-600">
                         Sign In
                     </a>
-                    <a href="<?= url('register/index.php') ?>" class="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition-all">
+                    <a href="<?= url('register/index.php') ?>" class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-all">
                         Get Started
                     </a>
                 <?php endif; ?>
@@ -74,7 +74,7 @@ startSession();
             <button
                 id="mobile-menu-btn"
                 type="button"
-                class="md:hidden inline-flex items-center justify-center w-10 h-10 rounded-lg text-gray-600 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                class="md:hidden inline-flex items-center justify-center w-10 h-10 rounded-lg text-gray-600 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 aria-controls="mobile-menu"
                 aria-expanded="false"
                 aria-label="Toggle menu">
@@ -86,10 +86,10 @@ startSession();
             <div class="px-5 py-4 flex flex-col gap-3">
                 <?php if (isset($_SESSION['user_id'])): ?>
                     <a href="<?= url('public/index.php') ?>" class="px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 rounded-lg">Dashboard</a>
-                    <a href="<?= url('src/helpers/logout.php') ?>" class="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700">Logout</a>
+                    <a href="<?= url('src/helpers/logout.php') ?>" class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700">Logout</a>
                 <?php else: ?>
                     <a href="<?= url('login/index.php') ?>" class="px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 rounded-lg">Sign In</a>
-                    <a href="<?= url('register/index.php') ?>" class="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700">Get Started</a>
+                    <a href="<?= url('register/index.php') ?>" class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700">Get Started</a>
                 <?php endif; ?>
             </div>
         </div>
@@ -100,7 +100,7 @@ startSession();
         <div class="flex flex-col lg:flex-row items-center gap-14">
             <div class="flex-1 text-center lg:text-left">
                 <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-gray-900 leading-tight">
-                    Take Control of <br class="hidden sm:block">Every Expense with <span class="text-indigo-600">TraceX</span>
+                    Take Control of <br class="hidden sm:block">Every Expense with <span class="text-blue-600">TraceX</span>
                 </h1>
                 <p class="mt-6 text-xl text-gray-600 max-w-2xl mx-auto lg:mx-0">
                     TraceX helps you track your expenses, manage budgets, and save smarter all in one app.
@@ -120,16 +120,16 @@ startSession();
                         <div class="bg-gray-100 rounded-xl p-3 w-full max-w-[280px] shadow-inner border border-gray-200">
                             <div class="bg-white rounded-lg h-40 w-full p-3 flex flex-col justify-between">
                                 <div class="flex justify-between items-center">
-                                    <span class="text-xs font-semibold text-indigo-600">May 2025</span>
-                                    <span class="text-[10px] bg-indigo-100 px-2 py-0.5 rounded-full">+4.2%</span>
+                                    <span class="text-xs font-semibold text-blue-600">May 2025</span>
+                                    <span class="text-[10px] bg-blue-100 px-2 py-0.5 rounded-full">+4.2%</span>
                                 </div>
                                 <!-- mini spending bars (graph) -->
                                 <div class="space-y-2 mt-3">
-                                    <div class="flex items-center gap-2"><span class="text-xs w-12">Food</span> <div class="h-2 flex-1 rounded-full bg-indigo-200"><div class="h-2 w-3/4 rounded-full bg-indigo-500"></div></div></div>
-                                    <div class="flex items-center gap-2"><span class="text-xs w-12">Transport</span> <div class="h-2 flex-1 rounded-full bg-indigo-200"><div class="h-2 w-2/5 rounded-full bg-indigo-500"></div></div></div>
-                                    <div class="flex items-center gap-2"><span class="text-xs w-12">Shopping</span> <div class="h-2 flex-1 rounded-full bg-indigo-200"><div class="h-2 w-4/5 rounded-full bg-indigo-500"></div></div></div>
+                                    <div class="flex items-center gap-2"><span class="text-xs w-12">Food</span> <div class="h-2 flex-1 rounded-full bg-blue-200"><div class="h-2 w-3/4 rounded-full bg-blue-500"></div></div></div>
+                                    <div class="flex items-center gap-2"><span class="text-xs w-12">Transport</span> <div class="h-2 flex-1 rounded-full bg-blue-200"><div class="h-2 w-2/5 rounded-full bg-blue-500"></div></div></div>
+                                    <div class="flex items-center gap-2"><span class="text-xs w-12">Shopping</span> <div class="h-2 flex-1 rounded-full bg-blue-200"><div class="h-2 w-4/5 rounded-full bg-blue-500"></div></div></div>
                                 </div>
-                                <div class="flex justify-end mt-2"><div class="w-6 h-6 rounded-full border-2 border-indigo-400 border-r-transparent"></div></div>
+                                <div class="flex justify-end mt-2"><div class="w-6 h-6 rounded-full border-2 border-blue-400 border-r-transparent"></div></div>
                             </div>
                             <div class="mt-2 text-center text-[10px] text-gray-400">laptop view</div>
                         </div>
@@ -138,7 +138,7 @@ startSession();
                             <div class="bg-white rounded-lg h-32 w-full p-2 flex flex-col">
                                 <div class="flex justify-between"><span class="text-[8px] font-bold">$342</span><span class="text-[6px] bg-emerald-100 px-1 rounded">budget</span></div>
                                 <!-- tiny line chart -->
-                                <svg viewBox="0 0 50 30" class="mt-1 w-full h-8 stroke-indigo-500 stroke-1 fill-none">
+                                <svg viewBox="0 0 50 30" class="mt-1 w-full h-8 stroke-blue-500 stroke-1 fill-none">
                                     <polyline points="2,20 12,10 22,18 32,5 42,12 48,20" stroke="currentColor" stroke-width="1.5" />
                                 </svg>
                                 <span class="mt-auto text-[6px] text-gray-400">phone sync</span>
@@ -152,7 +152,7 @@ startSession();
                     </div>
                 </div>
                 <!-- floating graph element (decor) -->
-                <div class="absolute -bottom-4 -left-4 w-20 h-20 bg-indigo-100 rounded-full -z-10 blur-xl opacity-60"></div>
+                <div class="absolute -bottom-4 -left-4 w-20 h-20 bg-blue-100 rounded-full -z-10 blur-xl opacity-60"></div>
             </div>
         </div>
     </section>
@@ -165,24 +165,24 @@ startSession();
         </div>
         <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             <!-- card 1 -->
-            <div class="group feature-card relative overflow-hidden rounded-3xl border border-indigo-100 bg-white p-7 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl">
-                <div class="absolute right-0 top-0 h-24 w-24 rounded-bl-[3rem] bg-indigo-50 transition duration-300 group-hover:bg-indigo-100"></div>
+            <div class="group feature-card relative overflow-hidden rounded-3xl border border-blue-100 bg-white p-7 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl">
+                <div class="absolute right-0 top-0 h-24 w-24 rounded-bl-[3rem] bg-blue-50 transition duration-300 group-hover:bg-blue-100"></div>
                 <div class="relative">
                     <div class="mb-6 flex items-center justify-between">
-                        <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-600 text-xl text-white shadow-lg shadow-indigo-200">
+                        <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-600 text-xl text-white shadow-lg shadow-blue-200">
                             <i class="fa-regular fa-compass"></i>
                         </div>
-                        <span class="rounded-full bg-indigo-50 px-3 py-1 text-xs font-semibold text-indigo-700">Live view</span>
+                        <span class="rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700">Live view</span>
                     </div>
                     <h3 class="text-xl font-bold leading-snug text-gray-900">Track Spending Effortlessly</h3>
                     <p class="mt-3 text-sm leading-7 text-gray-600">See where your money goes as you add expenses, with categories that keep each transaction easy to understand.</p>
                     <div class="mt-6 rounded-2xl bg-gray-50 p-4">
                         <div class="flex items-center justify-between text-xs text-gray-500">
                             <span>Today</span>
-                            <span class="font-semibold text-indigo-700">12 entries</span>
+                            <span class="font-semibold text-blue-700">12 entries</span>
                         </div>
-                        <div class="mt-3 h-2 rounded-full bg-indigo-100">
-                            <div class="h-2 w-3/4 rounded-full bg-indigo-500"></div>
+                        <div class="mt-3 h-2 rounded-full bg-blue-100">
+                            <div class="h-2 w-3/4 rounded-full bg-blue-500"></div>
                         </div>
                     </div>
                 </div>
@@ -279,8 +279,8 @@ startSession();
                     TraceX turns everyday spending into simple patterns you can act on. Learn what to keep, what to trim, and how to build a money routine that lasts.
                 </p>
                 <div class="mt-8 grid grid-cols-3 gap-3 rounded-3xl border border-gray-100 bg-white p-3 shadow-sm">
-                    <div class="rounded-2xl bg-indigo-50 px-4 py-5 text-center">
-                        <p class="text-2xl font-bold text-indigo-700">50</p>
+                    <div class="rounded-2xl bg-blue-50 px-4 py-5 text-center">
+                        <p class="text-2xl font-bold text-blue-700">50</p>
                         <p class="mt-1 text-xs font-medium text-gray-500">Needs</p>
                     </div>
                     <div class="rounded-2xl bg-amber-50 px-4 py-5 text-center">
@@ -302,7 +302,7 @@ startSession();
                     </div>
                     <div class="p-7 md:p-8">
                         <div class="flex flex-wrap gap-2">
-                            <span class="rounded-full bg-indigo-50 px-3 py-1 text-xs font-semibold text-indigo-700">50/30/20 Rule</span>
+                            <span class="rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700">50/30/20 Rule</span>
                             <span class="rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-600">Beginner friendly</span>
                         </div>
                         <h3 class="mt-5 text-2xl font-bold text-gray-900">Give every kyat a clear role.</h3>
@@ -352,18 +352,18 @@ startSession();
             <p class="text-gray-600 mt-2 text-lg">No complicated setup, just you and your goals.</p>
         </div>
         <div class="relative max-w-3xl mx-auto">
-            <div class="absolute left-8 top-8 bottom-8 w-0.5 rounded-full bg-indigo-200 md:left-1/2 md:-translate-x-1/2"></div>
+            <div class="absolute left-8 top-8 bottom-8 w-0.5 rounded-full bg-blue-200 md:left-1/2 md:-translate-x-1/2"></div>
 
             <div class="relative grid gap-8">
                 <div class="relative md:grid md:grid-cols-2 md:gap-12 md:items-center">
                     <div class="md:text-right md:pr-8">
                         <div class="ml-20 rounded-3xl border border-white bg-white p-6 shadow-sm md:ml-0">
-                            <span class="text-sm font-semibold text-indigo-600">Step 01</span>
+                            <span class="text-sm font-semibold text-blue-600">Step 01</span>
                             <h3 class="text-xl font-semibold mt-2 text-gray-900">Sign Up</h3>
                             <p class="text-gray-600 mt-2">Create your account in seconds.</p>
                         </div>
                     </div>
-                    <div class="absolute left-0 top-5 step-circle w-16 h-16 bg-indigo-600 text-white rounded-3xl text-2xl font-bold flex items-center justify-center shadow-lg shadow-indigo-200 md:left-1/2 md:-translate-x-1/2">1</div>
+                    <div class="absolute left-0 top-5 step-circle w-16 h-16 bg-blue-600 text-white rounded-3xl text-2xl font-bold flex items-center justify-center shadow-lg shadow-blue-200 md:left-1/2 md:-translate-x-1/2">1</div>
                     <div class="hidden md:block"></div>
                 </div>
 
@@ -371,23 +371,23 @@ startSession();
                     <div class="hidden md:block"></div>
                     <div class="md:pl-8">
                         <div class="ml-20 rounded-3xl border border-white bg-white p-6 shadow-sm md:ml-0">
-                            <span class="text-sm font-semibold text-indigo-600">Step 02</span>
+                            <span class="text-sm font-semibold text-blue-600">Step 02</span>
                             <h3 class="text-xl font-semibold mt-2 text-gray-900">Save Expenses</h3>
                             <p class="text-gray-600 mt-2">Start saving your expenses, you're in control.</p>
                         </div>
                     </div>
-                    <div class="absolute left-0 top-5 step-circle w-16 h-16 bg-indigo-600 text-white rounded-3xl text-2xl font-bold flex items-center justify-center shadow-lg shadow-indigo-200 md:left-1/2 md:-translate-x-1/2">2</div>
+                    <div class="absolute left-0 top-5 step-circle w-16 h-16 bg-blue-600 text-white rounded-3xl text-2xl font-bold flex items-center justify-center shadow-lg shadow-blue-200 md:left-1/2 md:-translate-x-1/2">2</div>
                 </div>
 
                 <div class="relative md:grid md:grid-cols-2 md:gap-12 md:items-center">
                     <div class="md:text-right md:pr-8">
                         <div class="ml-20 rounded-3xl border border-white bg-white p-6 shadow-sm md:ml-0">
-                            <span class="text-sm font-semibold text-indigo-600">Step 03</span>
+                            <span class="text-sm font-semibold text-blue-600">Step 03</span>
                             <h3 class="text-xl font-semibold mt-2 text-gray-900">Track & Optimize</h3>
                             <p class="text-gray-600 mt-2">Analyze, plan, and save smarter with real insights.</p>
                         </div>
                     </div>
-                    <div class="absolute left-0 top-5 step-circle w-16 h-16 bg-indigo-600 text-white rounded-3xl text-2xl font-bold flex items-center justify-center shadow-lg shadow-indigo-200 md:left-1/2 md:-translate-x-1/2">3</div>
+                    <div class="absolute left-0 top-5 step-circle w-16 h-16 bg-blue-600 text-white rounded-3xl text-2xl font-bold flex items-center justify-center shadow-lg shadow-blue-200 md:left-1/2 md:-translate-x-1/2">3</div>
                     <div class="hidden md:block"></div>
                 </div>
 
@@ -395,12 +395,12 @@ startSession();
                     <div class="hidden md:block"></div>
                     <div class="md:pl-8">
                         <div class="ml-20 rounded-3xl border border-white bg-white p-6 shadow-sm md:ml-0">
-                            <span class="text-sm font-semibold text-indigo-600">Step 04</span>
+                            <span class="text-sm font-semibold text-blue-600">Step 04</span>
                             <h3 class="text-xl font-semibold mt-2 text-gray-900">View Insights</h3>
                             <p class="text-gray-600 mt-2">Review spending patterns, top expenses, and category insights to make better money decisions.</p>
                         </div>
                     </div>
-                    <div class="absolute left-0 top-5 step-circle w-16 h-16 bg-indigo-600 text-white rounded-3xl text-2xl font-bold flex items-center justify-center shadow-lg shadow-indigo-200 md:left-1/2 md:-translate-x-1/2">4</div>
+                    <div class="absolute left-0 top-5 step-circle w-16 h-16 bg-blue-600 text-white rounded-3xl text-2xl font-bold flex items-center justify-center shadow-lg shadow-blue-200 md:left-1/2 md:-translate-x-1/2">4</div>
                 </div>
             </div>
         </div>
@@ -409,7 +409,7 @@ startSession();
     <!-- testimonials -->
     <!-- <section class="max-w-7xl mx-auto px-5 py-20 md:py-24">
         <div class="text-center mb-14">
-            <span class="text-sm font-semibold text-indigo-600 uppercase tracking-wider">Trusted by early adopters</span>
+            <span class="text-sm font-semibold text-blue-600 uppercase tracking-wider">Trusted by early adopters</span>
             <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mt-3">Loved by finance enthusiasts</h2>
         </div>
         <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -417,7 +417,7 @@ startSession();
                 <div class="flex text-amber-400 text-lg gap-0.5 mb-4">★★★★★</div>
                 <p class="text-gray-700 text-lg italic">“TraceX turned my chaotic expenses into crystal clear categories. The alerts saved me from overdrafts twice!”</p>
                 <div class="mt-6 flex items-center gap-3">
-                    <div class="w-11 h-11 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-700 font-bold">MP</div>
+                    <div class="w-11 h-11 bg-blue-100 rounded-full flex items-center justify-center text-blue-700 font-bold">MP</div>
                     <div><p class="font-semibold text-gray-900">Megan Park</p><p class="text-sm text-gray-500">early adopter</p></div>
                 </div>
             </div>
@@ -430,9 +430,8 @@ startSession();
         <div class="max-w-7xl mx-auto px-5 py-14 md:py-20">
             <div class="grid gap-10 md:grid-cols-[1.2fr_0.8fr_0.6fr] md:items-start">
                 <div>
-                    <div class="flex items-center gap-3">
-                        <!-- <img src="/public/assets/test.png" alt="TraceX Logo" class="h-11 rounded-xl"> -->
-                        <span class="text-3xl font-bold text-indigo-600">TraceX</span>
+                    <div class="flex items-center gap-2.5">
+                        <?php $variant = 'dark'; $size = 'lg'; include __DIR__ . '/views/components/logo.php'; ?>
                     </div>
                     <p class="mt-5 max-w-xl text-base leading-8 text-gray-600">
                         Track expenses, understand your spending habits, and make clearer money decisions with a simple personal finance dashboard.
@@ -442,15 +441,15 @@ startSession();
                 <div>
                     <h3 class="text-sm font-bold uppercase tracking-wider text-gray-900">Useful links</h3>
                     <div class="mt-5 flex flex-col gap-3 text-base font-medium text-gray-600">
-                        <a href="<?= url('terms-and-conditions.php') ?>" class="hover:text-indigo-600 transition">Terms & Conditions</a>
-                        <a href="https://aungkyawthet-portfolio.vercel.app/#contact" target="_blank" class="hover:text-indigo-600 transition">Contact</a>
+                        <a href="<?= url('terms-and-conditions.php') ?>" class="hover:text-blue-600 transition">Terms & Conditions</a>
+                        <a href="https://aungkyawth3t-portfolio.vercel.app/#contact" target="_blank" class="hover:text-blue-600 transition">Contact Developer</a>
                     </div>
                 </div>
 
                 <div>
                     <h3 class="text-sm font-bold uppercase tracking-wider text-gray-900">Follow</h3>
                     <div class="mt-5 flex gap-4 text-2xl text-gray-600">
-                        <a href="https://github.com/aungkyawthetx" target="_blank" class="flex h-11 w-11 items-center justify-center rounded-full bg-white shadow-sm transition hover:-translate-y-0.5 hover:text-indigo-600 hover:shadow-md" aria-label="GitHub">
+                        <a href="https://github.com/aungkyawthetx" target="_blank" class="flex h-11 w-11 items-center justify-center rounded-full bg-white shadow-sm transition hover:-translate-y-0.5 hover:text-blue-600 hover:shadow-md" aria-label="GitHub">
                             <i class="fab fa-github"></i>
                         </a>
                     </div>
