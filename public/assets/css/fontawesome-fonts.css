@@ -1,0 +1,26 @@
+/* Re-point Font Awesome faces at fonts.php: shared hosts don't cache woff2 by
+   default and .htaccess expires rules are restricted there, so serve fonts with
+   cache headers from PHP instead. Later @font-face rules win the cascade. */
+@font-face {
+  font-family: "Font Awesome 7 Brands";
+  font-style: normal;
+  font-weight: 400;
+  font-display: block;
+  src: url(/public/assets/fonts.php?file=fa-brands-400.woff2) format("woff2");
+}
+
+@font-face {
+  font-family: "Font Awesome 7 Free";
+  font-style: normal;
+  font-weight: 400;
+  font-display: block;
+  src: url(/public/assets/fonts.php?file=fa-regular-400.woff2) format("woff2");
+}
+
+@font-face {
+  font-family: "Font Awesome 7 Free";
+  font-style: normal;
+  font-weight: 900;
+  font-display: block;
+  src: url(/public/assets/fonts.php?file=fa-solid-900.woff2) format("woff2");
+}

@@ -4,6 +4,7 @@ include __DIR__ . '/head.php';
 ?>
   <link rel="stylesheet" href="/src/output.css">
   <link rel="stylesheet" href="/public/assets/vendor/fontawesome-free-7.1.0-web/css/all.min.css">
+  <link rel="stylesheet" href="/public/assets/css/fontawesome-fonts.css">
 </head>
 <body class="bg-gray-50 min-h-screen flex flex-col">
   <main class="flex-1 flex items-center justify-center px-4 py-12 sm:px-6">

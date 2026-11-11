@@ -4,6 +4,7 @@ include __DIR__ . '/head.php';
   <link rel="stylesheet" href="/src/output.css">
   <!-- fontawesome -->
   <link rel="stylesheet" href="/public/assets/vendor/fontawesome-free-7.1.0-web/css/all.min.css">
+  <link rel="stylesheet" href="/public/assets/css/fontawesome-fonts.css">
   <link rel="stylesheet" href="/public/assets/vendor/flatpickr/flatpickr.min.css">
 </head>
 <body class="bg-gray-100">
