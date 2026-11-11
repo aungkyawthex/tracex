@@ -137,11 +137,18 @@
             <label class="block text-gray-700 text-sm font-bold mb-2" for="password">
                 Password
             </label>
-            <input class="appearance-none border border-gray-300 rounded-lg w-full py-2 px-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 <?= isset($errors['password']) ? 'border-red-500' : '' ?>" 
-                id="password" 
-                type="password" 
-                name="password" 
-                placeholder="password">
+            <div class="relative">
+                <input class="appearance-none border border-gray-300 rounded-lg w-full py-2 px-3 pr-10 text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 <?= isset($errors['password']) ? 'border-red-500' : '' ?>" 
+                    id="password" 
+                    type="password" 
+                    name="password" 
+                    placeholder="password">
+                <button type="button" data-password-toggle="password" aria-label="Show password" aria-pressed="false"
+                    class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 hover:text-gray-700 focus:outline-none cursor-pointer">
+                    <i class="fa-solid fa-eye toggle-show"></i>
+                    <i class="fa-solid fa-eye-slash toggle-hide" style="display:none"></i>
+                </button>
+            </div>
                 <?php if (isset($errors['password'])): ?>
                     <p class="text-red-500 text-xs italic mt-1"><?= htmlspecialchars($errors['password']) ?></p>
                 <?php endif; ?>
@@ -151,11 +158,18 @@
             <label class="block text-gray-700 text-sm font-bold mb-2" for="confirm_password">
                 Confirm Password
             </label>
-            <input class="appearance-none border border-gray-300 rounded-lg w-full py-2 px-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 <?= isset($errors['confirm_password']) ? 'border-red-500' : '' ?>" 
-            id="confirm-password" 
-            type="password" 
-            name="confirm_password" 
-            placeholder="Confirm password">
+            <div class="relative">
+                <input class="appearance-none border border-gray-300 rounded-lg w-full py-2 px-3 pr-10 text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 <?= isset($errors['confirm_password']) ? 'border-red-500' : '' ?>" 
+                id="confirm-password" 
+                type="password" 
+                name="confirm_password" 
+                placeholder="Confirm password">
+                <button type="button" data-password-toggle="confirm-password" aria-label="Show password" aria-pressed="false"
+                    class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 hover:text-gray-700 focus:outline-none cursor-pointer">
+                    <i class="fa-solid fa-eye toggle-show"></i>
+                    <i class="fa-solid fa-eye-slash toggle-hide" style="display:none"></i>
+                </button>
+            </div>
             <?php if (isset($errors['confirm_password'])): ?>
                 <p class="text-red-500 text-xs italic mt-1"><?= htmlspecialchars($errors['confirm_password']) ?></p>
             <?php endif; ?>

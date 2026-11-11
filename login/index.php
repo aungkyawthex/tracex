@@ -114,11 +114,18 @@
             <label class="block text-gray-700 text-sm font-bold mb-2" for="password">
                 Password
             </label>
-            <input class="bg-gray-50 py-2 px-3 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 block w-full <?= isset($errors['password']) ? 'border-red-500' : '' ?>" 
-                id="password" 
-                type="password" 
-                placeholder="Enter your password"
-                name="password">
+            <div class="relative">
+                <input class="bg-gray-50 py-2 px-3 pr-10 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 block w-full <?= isset($errors['password']) ? 'border-red-500' : '' ?>" 
+                    id="password" 
+                    type="password" 
+                    placeholder="Enter your password"
+                    name="password">
+                <button type="button" data-password-toggle="password" aria-label="Show password" aria-pressed="false"
+                    class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 hover:text-gray-700 focus:outline-none cursor-pointer">
+                    <i class="fa-solid fa-eye toggle-show"></i>
+                    <i class="fa-solid fa-eye-slash toggle-hide" style="display:none"></i>
+                </button>
+            </div>
                 <?php if (isset($errors['password'])): ?>
                     <p class="text-red-500 text-xs italic mt-1"><?= htmlspecialchars($errors['password']) ?></p>
                 <?php endif; ?>

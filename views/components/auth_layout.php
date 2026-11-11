@@ -9,6 +9,7 @@ include __DIR__ . '/head.php';
   <div class="w-full max-w-md">
     <?= $content ?? '' ?>
   </div>
+  <script src="/public/assets/js/password-toggle.js"></script>
   <script src="/public/assets/js/button-loading.js"></script>
   <script src="/public/assets/js/app.main.js"></script>
 </body>
