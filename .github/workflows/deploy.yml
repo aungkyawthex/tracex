@@ -11,7 +11,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: tracex-production-deployment
+  group: tracex-production
   cancel-in-progress: false
 
 jobs:
@@ -46,10 +46,8 @@ jobs:
           port: 21
           local-dir: ./
           server-dir: htdocs/
-
-          dry-run: true
           dangerous-clean-slate: false
-
+          log-level: verbose
           exclude: |
             **/.git*
             **/.git*/**
@@ -57,13 +55,8 @@ jobs:
             **/node_modules/**
             **/.env*
             **/config/db.php
-            **/database/**
-            **/tests/**
-            **/vendor/**
-            **/package.json
-            **/package-lock.json
-            **/composer.json
-            **/composer.lock
-            **/phpunit.xml*
             **/README.md
             **/.vscode/**
+            **/tests/**
+            **/storage/logs/**
+            **/.ftp-deploy-sync-state.json
