@@ -48,11 +48,14 @@ jobs:
           server-dir: htdocs/
           dangerous-clean-slate: false
           log-level: verbose
+          # Keep runtime files only: vendor is a dev-only install (no composer autoload at runtime)
+          # and the Font Awesome bundle ships thousands of unused svgs/sprite/metadata files.
           exclude: |
             **/.git*
             **/.git*/**
             **/.github/**
             **/node_modules/**
+            **/vendor/**
             **/.env*
             **/config/db.php
             **/README.md
@@ -60,3 +63,15 @@ jobs:
             **/tests/**
             **/storage/logs/**
             **/.ftp-deploy-sync-state.json
+            **/phpunit.xml
+            **/composer.json
+            **/composer.lock
+            **/package.json
+            **/package-lock.json
+            **/fontawesome-free-7.1.0-web/svgs/**
+            **/fontawesome-free-7.1.0-web/svgs-full/**
+            **/fontawesome-free-7.1.0-web/sprites/**
+            **/fontawesome-free-7.1.0-web/sprites-full/**
+            **/fontawesome-free-7.1.0-web/metadata/**
+            **/fontawesome-free-7.1.0-web/js/**
+            **/fontawesome-free-7.1.0-web/scss/**
